@@ -30,20 +30,23 @@ else
                       % [1 2] - Both Axles
     
     %%% Vehicle Level Targets
-    Target.Wheelbase  = 1525;             % Wheelbase [mm]
-    Target.WeightDist = 0.5;              % Front Weight Distribution []
+    Target.Wheelbase  = 1525;             % Nominal Wheelbase [mm]
+    Target.WeightDist = 0.5;              % Static Front Weight Distribution []
     Target.CG(3)      = 8.5  .* (25.4);   % Nominal CG Height [in -> mm]
-    Target.Track      = 1220;             % Nominal [Front, Rear] Track Width [mm]
     Target.Ride       = 2    .* (25.4);   % Nominal Ride Height [in -> mm]
     Target.Rake       = 0;                % Nominal Rake Angle [deg]
     Target.Rl         = 7.85 .* (25.4);   % Nominal Loading Radius [in -> mm]
     
-    Target.CG(1) = Target.Wheelbase * (1-Target.WeightDist);
+    Target.CG(1) = Target.Wheelbase * (1-Target.WeightDist); % C.G. to Front Axle (a) [mm]
+    
     Target.Axle = 'Front';
-    Target(2) = Target(1);
+    Target(2) = Target(1); 
     Target(2).Axle = 'Rear';
+    Target(2).WeightDist = 1 - Target(1).WeightDist; % Static Rear Weight Distribution []
+    Target(2).CG(1) = Target.Wheelbase - Target(1).CG(1); % C.G. to Rear Axle (b) [mm]
     
     %%% Suspension Objectives
+    Target(1).Track       =  1220;                    % Nominal Front Track Width [mm]
     Target(1).RollCenter  =  2.00 .* (25.4);          % Force-Based Roll Center Height [in -> mm]
     Target(1).DraftAngle  =  3.00;                    % Draft Angle [deg]
     Target(1).Caster      =  3.00;                    % Caster [deg]
@@ -54,6 +57,7 @@ else
     Target(1).KPI         =  5.00;                    % Maximum KPI [deg]
     Target(1).MotionRatio =  0.80;                    % Motion Ratio Target [] 
     
+    Target(2).Track       =  1220;                    % Nominal Rear Track Width [mm] 
     Target(2).RollCenter  =  4.00 .* (25.4);          % Force-Based Roll Center Height [in -> mm]
     Target(2).DraftAngle  =  3.00;                    % Draft Angle [deg]
     Target(2).Caster      =  0.00;                    % Caster [deg]
@@ -65,38 +69,37 @@ else
     Target(2).MotionRatio =  0.80;                    % Motion Ratio Target [] 
     
     %%% Suspension Hard Point Bounds
-    % Inboard Pickups: Longitudinal |  Lateral   |  Vertical   | 
-    Bounds(1).LA =     [ 0.00, 0.00 ; 0.00, 0.00 ; 0.50,  2.00 ] .* (25.4); % FLA Bounds [in -> mm]
-    Bounds(1).UA =     [ 0.00, 0.00 ; 0.00, 0.00 ; 4.50, 10.00 ] .* (25.4); % FUA Bounds [in -> mm]
-    Bounds(1).TA =     [ 0.00, 4.00 ; 8.70, 8.70 ; 2.50,  4.00 ] .* (25.4); % FTA Bounds [in -> mm]
-    Bounds(1).RA =     zeros(3,2);
-    Bounds(1).PA =     zeros(3,2);
-    Bounds(1).SA =     [ 0.00, 0.00 ; 8.00, 12.00; 10.00, 18.00] .* (25.4);
-
-    Bounds(2).LA =     [ 0.00, 0.00 ; 0.00, 0.00; 0.50,  2.00 ] .* (25.4); % RLA Inboard Bounds [in -> mm]
-    Bounds(2).UA =     [ 0.00, 0.00 ; 0.00, 0.00; 4.50, 10.00 ] .* (25.4); % RUA Inboard Bounds [in -> mm]
-    Bounds(2).TA =     [ 2.25, 3.75 ; 8.70, 9.25; 4.00,  5.00 ] .* (25.4); % RTA Inboard Bounds [in -> mm]
-    Bounds(2).RA =     zeros(3,2);
-    Bounds(2).PA =     zeros(3,2);
-    Bounds(2).SA =     zeros(3,2);
-
-    % Outboard Pickups: Longitudinal |   Lateral    |   Vertical   |
-    Bounds(1).LB =     [ 0.00,  0.00 ; -0.85, -0.85 ; -3.30, -2.85 ] .* (25.4); % FLB Bounds [in -> mm] 
-    Bounds(1).UB =     [ 0.00,  0.00 ; -2.00, -0.85 ;  2.60,  3.70 ] .* (25.4); % FUB Bounds [in -> mm] 
-    Bounds(1).TB =     [ 2.25,  3.75 ; -1.75, -0.85 ; -2.50,  2.50 ] .* (25.4); % FTB Bounds [in -> mm]
-    Bounds(1).PB =     zeros(3,2); 
-    Bounds(1).SB =     zeros(3,2);
-
-    Bounds(2).LB =     [ 0.00,  0.00; -0.85, -0.85; -3.30, -2.85 ] .* (25.4); % RLB Bounds [in -> mm] 
-    Bounds(2).UB =     [ 0.00,  0.00; -2.00, -0.85;  2.60,  3.70 ] .* (25.4); % RUB Bounds [in -> mm] 
-    Bounds(2).TB =     [ 2.25,  3.75; -1.75, -0.85; -2.50,  2.50 ] .* (25.4); % RTB Bounds [in -> mm] 
-    Bounds(2).PB =     zeros(3,2);
-    Bounds(2).SB =     zeros(3,2);
+    % All values specified by single 0's are not required and should not be
+    % changed. These coordinates are automatically solved for via design
+    % rules.
     
-    % Additional Dimensions
-    % Bounds.PR = ['L', 'U']
-    % Bounds.RL(1,:) = [0
-    % Bounds.RT(1,:) = 
+    % Inboard Pickups: Longitudinal |   Lateral   |   Vertical  | 
+    Bounds(1).LA =    [  0   ,  0   ;  0   ,  0   ;  0.50,  2.00] .* (25.4); % FLA Bounds (BCS) [in -> mm]
+    Bounds(1).UA =    [  0   ,  0   ;  0   ,  0   ;  4.50, 10.00] .* (25.4); % FUA Bounds (BCS) [in -> mm]
+    Bounds(1).TA =    [  0.00,  4.00;  8.70,  8.70;  2.50,  4.00] .* (25.4); % FTA Bounds (BCS) [in -> mm]
+    Bounds(1).RA =    [- 3.00,  0.00;  6.00,  9.50;  0.50, 10.00] .* (25.4); % FRA Bounds (BCS) [in -> mm]
+    Bounds(1).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % FPA Bounds (RCS) [in -> mm]
+    Bounds(1).SA =    [- 3.00,  0.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % FSA Bounds (BCS) [in -> mm]
+
+    Bounds(2).LA =    [  0   ,  0   ;  0   ,  0   ;  0.50,  2.00] .* (25.4); % RLA Bounds (BCS) [in -> mm]
+    Bounds(2).UA =    [  0   ,  0   ;  0   ,  0   ;  4.50, 10.00] .* (25.4); % RUA Bounds (BCS) [in -> mm]
+    Bounds(2).TA =    [  2.25,  3.75;  8.70,  9.25;  4.00,  5.00] .* (25.4); % RTA Bounds (BCS) [in -> mm]
+    Bounds(2).RA =    [- 2.00,  2.00;  6.00,  9.50;  0.50, 10.00] .* (25.4); % RRA Bounds (BCS) [in -> mm]
+    Bounds(2).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % RPA Bounds (RCS) [in -> mm]
+    Bounds(2).SA =    [- 3.00,  3.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % RSA Bounds (BCS) [in -> mm]
+
+   % Outboard Pickups: Longitudinal |   Lateral   |  Vertical   |
+    Bounds(1).LB =    [  0   ,  0   ;- 0.85,- 0.85;- 3.30,- 2.85] .* (25.4); % FLB Bounds (TCS) [in -> mm] 
+    Bounds(1).UB =    [  0   ,  0   ;- 2.00,- 0.85;  2.60,  3.70] .* (25.4); % FUB Bounds (TCS) [in -> mm] 
+    Bounds(1).TB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FTB Bounds (TCS) [in -> mm]
+    Bounds(1).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FPB Bounds (LACS) [in -> mm] 
+    Bounds(1).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FSB Bounds (RCS) [in -> mm]
+
+    Bounds(2).LB =    [  0   ,  0   ;- 0.85,- 0.85;- 3.30,- 2.85] .* (25.4); % RLB Bounds (TCS) [in -> mm] 
+    Bounds(2).UB =    [  0   ,  0   ;- 2.00,- 0.85;  2.60,  3.70] .* (25.4); % RUB Bounds (TCS) [in -> mm] 
+    Bounds(2).TB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RTB Bounds (TCS) [in -> mm]
+    Bounds(2).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RPB Bounds (LACS) [in -> mm] 
+    Bounds(2).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RSB Bounds (RCS) [in -> mm]
     
     %%% Operating Condition Ranges
     Attitude.Ride  = [  1.5  2.5] .* (25.4); % Ride Height Range [mm]
