@@ -43,7 +43,7 @@ else
     Target(2) = Target(1); 
     Target(2).Axle = 'Rear';
     Target(2).WeightDist = 1 - Target(1).WeightDist; % Static Rear Weight Distribution []
-    Target(2).CG(1) = Target.Wheelbase - Target(1).CG(1); % C.G. to Rear Axle (b) [mm]
+    Target(2).CG(1) = Target(1).Wheelbase - Target(1).CG(1); % C.G. to Rear Axle (b) [mm]
     
     %%% Suspension Objectives
     Target(1).Track       =  1220;                    % Nominal Front Track Width [mm]
@@ -105,7 +105,7 @@ else
     Attitude.Ride  = [  1.5  2.5] .* (25.4); % Ride Height Range [mm]
     Attitude.Pitch = [ -3.0  3.0];           % Pitch Range [deg]
     Attitude.Roll  = [  0.0  3.0];           % Roll  Range (Mirrored) [deg]
-    Attitude.Steer = [-15.0 25.0];           % Steer Range (Mirrored) [deg]
+    Attitude.Steer = [-15.0 25.0];           % Steer Range (Mirrored) [in]
 
     N.Design = 1; % Number of Designs
     
