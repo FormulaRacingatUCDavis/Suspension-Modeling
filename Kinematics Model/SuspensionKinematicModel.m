@@ -51,8 +51,8 @@ else
     Target(1).DraftAngle  =  3.00;                    % Draft Angle [deg]
     Target(1).Caster      =  3.00;                    % Caster [deg]
     Target(1).Camber      = -1.20;                    % Static Camber [deg]
-    Target(1).CamberGain  = -1.50 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
-    Target(1).Toe         =  0.50;                    % Static Toe (Positive Out) [deg]
+    Target(1).CamberGain  = -0.50 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
+    Target(1).Toe         =  2.00;                    % Static Toe (Positive Out) [deg]
     Target(1).Scrub       =  0.50 .* (25.4);          % Maximum Scrub [in -> mm]
     Target(1).KPI         =  5.00;                    % Maximum KPI [deg]
     Target(1).MotionRatio =  0.80;                    % Motion Ratio Target [] 
@@ -107,7 +107,7 @@ else
     Attitude.Roll  = [  0.0  3.0];           % Roll  Range (Mirrored) [deg]
     Attitude.Steer = [-15.0 25.0];           % Steer Range (Mirrored) [in]
 
-    N.Design = 1; % Number of Designs
+    N.Design = 10; % Number of Designs
     
     %% Design Roll & Steer Geometry
     for i = DesignAxle

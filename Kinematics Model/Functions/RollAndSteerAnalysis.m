@@ -34,10 +34,11 @@ view(135,15);
 
 %% Geometry Sweeps & Visualization
 tic
+% figure;
 for i = DesignAxle
     for j = 1 : size(Design,2)
         %%% Sweep Setup
-        N = 15;
+        N = 9;
         M = 3;
         
         % Ride Sweep
@@ -50,7 +51,7 @@ for i = DesignAxle
         Sweep(i,j,2).Ride  = zeros(M,N);
         Sweep(i,j,2).Roll  = repmat( linspace( -2.5, 2.5, N ), M, 1);
         Sweep(i,j,2).Pitch = zeros(M,N);
-        Sweep(i,j,2).Steer = linspace(-20,20,M)' * ones(1,N);
+        Sweep(i,j,2).Steer = linspace(-25,25,M)' * ones(1,N);
 
         % Steer Sweep
         Sweep(i,j,3).Ride  = linspace(Target(1).Ride-25.4, Target(1).Ride+25.4,M)' * ones(1,N);
@@ -66,9 +67,9 @@ for i = DesignAxle
                     Sample.Roll  = Sweep(i,j,k).Roll(m,n);
                     Sample.Pitch = Sweep(i,j,k).Pitch(m,n);
                     Sample.Steer = Sweep(i,j,k).Steer(m,n);
-
+                    
                     [Sweep(i,j,k).Base(m,n,:)         , Sweep(i,j,k).Track(m,n,:) , ...
-                     Sweep(i,j,k).Toe(m,n,:)        , Sweep(i,j,k).Camber(m,n,:), ...
+                     Sweep(i,j,k).Toe(m,n,:)          , Sweep(i,j,k).Camber(m,n,:), ...
                      Sweep(i,j,k).InstantCenter(m,n,:), Sweep(i,j,k).RollCenter(m,n,:), ...
                      Sweep(i,j,k).Modulus(m,n,:)] = ...
                         KinematicsEvaluation( Design(i,j), Sample, Target(i) );
@@ -85,48 +86,79 @@ for i = DesignAxle
     figure; 
     subplot(3,2,1) % Bump Steer
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,1).Ride', Sweep(i,j,1).Toe(:,:,1)' - Sweep(i,j,1).Toe(:,floor(end/2),1)'); hold on;
+        plot(Sweep(i,j,1).Ride(1,:,:)', Sweep(i,j,1).Toe(1,:,1)' - Sweep(i,j,1).Toe(1,ceil(end/2),1)', 'r' ); hold on;
+        plot(Sweep(i,j,1).Ride(2,:,:)', Sweep(i,j,1).Toe(2,:,1)' - Sweep(i,j,1).Toe(2,ceil(end/2),1)', 'b' );
+        plot(Sweep(i,j,1).Ride(3,:,:)', Sweep(i,j,1).Toe(3,:,1)' - Sweep(i,j,1).Toe(3,ceil(end/2),1)', 'g' );
     end
     
     xlabel( 'Ride' )
     ylabel( 'Bump Steer' )
+    legend( {['\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), 'mm']} )
     
     subplot(3,2,3) % Roll Steer
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,2).Roll', Sweep(i,j,2).Toe(:,:,1)' - Sweep(i,j,2).Toe(:,floor(end/2),1)'); hold on;
+        plot(Sweep(i,j,2).Roll(1,:,:)', Sweep(i,j,2).Toe(1,:,1)' - Sweep(i,j,2).Toe(1,ceil(end/2),1)', 'r' ); hold on;
+        plot(Sweep(i,j,2).Roll(2,:,:)', Sweep(i,j,2).Toe(2,:,1)' - Sweep(i,j,2).Toe(2,ceil(end/2),1)', 'b' );
+        plot(Sweep(i,j,2).Roll(3,:,:)', Sweep(i,j,2).Toe(3,:,1)' - Sweep(i,j,2).Toe(3,ceil(end/2),1)', 'g' );
     end
     
     xlabel( 'Roll' )
     ylabel( 'Roll Steer' )
-    
+    legend( {['\delta_{r}=', num2str( Sweep(i,1,2).Steer(1,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(2,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(3,1,1) ), 'mm']} )
+         
     subplot(3,2,5) % Steer-Steer
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,3).Steer', Sweep(i,j,3).Toe(:,:,1)'); hold on;
+        plot(Sweep(i,j,3).Steer(1,:,:)', Sweep(i,j,3).Toe(1,:,1)', 'r' ); hold on;
+        plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Toe(2,:,1)', 'b' );
+        plot(Sweep(i,j,3).Steer(3,:,:)', Sweep(i,j,3).Toe(3,:,1)', 'g' );
     end
     
     xlabel( 'Rack Displacement' )
     ylabel( 'Steer Angle' )
-    
+    legend( {['z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), 'mm'], ...
+             ['z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), 'mm'], ...
+             ['z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), 'mm']} )
+         
     subplot(3,2,2) % Camber Gain
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,1).Ride', Sweep(i,j,1).Camber(:,:,1)'); hold on;
+        plot(Sweep(i,j,1).Ride(1,:,:)', Sweep(i,j,1).Camber(1,:,1)', 'r' ); hold on;
+        plot(Sweep(i,j,1).Ride(2,:,:)', Sweep(i,j,1).Camber(2,:,1)', 'b' );
+        plot(Sweep(i,j,1).Ride(3,:,:)', Sweep(i,j,1).Camber(3,:,1)', 'g' );
     end
     
     xlabel( 'Ride' )
     ylabel( 'Camber' )
-    
+    legend( {['\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), 'mm']} )
+         
     subplot(3,2,4) % Roll Camber
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,2).Roll', Sweep(i,j,2).Camber(:,:,1)'); hold on;
+        plot(Sweep(i,j,2).Roll(1,:,:)', Sweep(i,j,2).Camber(1,:,1)', 'r' ); hold on;
+        plot(Sweep(i,j,2).Roll(2,:,:)', Sweep(i,j,2).Camber(2,:,1)', 'b' );
+        plot(Sweep(i,j,2).Roll(3,:,:)', Sweep(i,j,2).Camber(3,:,1)', 'g' );
     end
+    
     xlabel( 'Roll' )
     ylabel( 'Camber' )
-    
+    legend( {['\delta_{r}=', num2str( Sweep(i,1,2).Steer(1,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(2,1,1) ), 'mm'], ...
+             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(3,1,1) ), 'mm']} )
+         
     subplot(3,2,6) % Steer Induced Camber
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,3).Steer', Sweep(i,j,3).Camber(:,:,1)'); hold on;
+        plot(Sweep(i,j,3).Steer(1,:,:)', Sweep(i,j,3).Camber(1,:,1)', 'r' ); hold on;
+        plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Camber(2,:,1)', 'b' );
+        plot(Sweep(i,j,3).Steer(3,:,:)', Sweep(i,j,3).Camber(3,:,1)', 'g' );
     end
     
     xlabel( 'Rack Displacement' )
     ylabel( 'Camber' )
+    legend( {['z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), 'mm'], ...
+             ['z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), 'mm'], ...
+             ['z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), 'mm']} )
 end
