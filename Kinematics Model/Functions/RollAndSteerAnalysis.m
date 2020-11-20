@@ -44,7 +44,7 @@ for i = DesignAxle
         Sweep(i,j,1).Ride  = repmat( linspace( Target(1).Ride-25.4, Target(1).Ride+25.4, N ), M, 1);
         Sweep(i,j,1).Roll  = zeros(M,N);
         Sweep(i,j,1).Pitch = zeros(M,N);
-        Sweep(i,j,1).Steer = linspace(-20,20,M)' * ones(1,N);
+        Sweep(i,j,1).Steer = linspace(-25,25,M)' * ones(1,N);
 
         % Roll Sweep
         Sweep(i,j,2).Ride  = zeros(M,N);

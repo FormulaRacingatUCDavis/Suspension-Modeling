@@ -1,4 +1,4 @@
-function [Rake, Track, Caster, Camber, Toe, InstantCenter, RollCenter, KPI, Scrub] = ...
+function [Base, Track, Steer, Camber, InstantCenter, RollCenter, Modulus] = ...
     KinematicsEvaluation( Design, Attitude, Target, beta0 )
 %% Define Coordinate Transformations
 if strcmp(Target.Axle, 'Front')
@@ -63,22 +63,22 @@ x;
         Fval = norm(UB) + norm(TB) + Rl.^2;
     end
 
-function Fval = SuspensionMetrics( beta, Design, Attitude, Target )
+    function Fval = SuspensionMetrics( beta, Design, Attitude, Target )
         %% World Coordinates
-        UB1 = wTb( bTla( laTlb( lbTt(Design.p.UBt), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
-        UB2 = wTb( bTua( [0 Design.L.UA 0]', beta(2) ), Attitude.Roll, Attitude.Pitch );
+        LA = wTb( bTla( [0 0 0]', beta(1) ), Attitude.Roll, Attitude.Pitch );
+        UA = wTb( bTua( [0 0 0]', beta(2) ), Attitude.Roll, Attitude.Pitch );
+        TA = wTb( bTtr( [0 0 0]', beta(3), beta(4) ), Attitude.Roll, Attitude.Pitch );
         
-        TB1 = wTb( bTla( laTlb( lbTt(Design.p.TBt), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
-        TB2 = wTb( bTtr( [0 Design.L.TR 0]', beta(3), beta(4) ), Attitude.Roll, Attitude.Pitch );
+        LB = wTb( bTla( [0 Design.L.LA 0]', beta(1) ), Attitude.Roll, Attitude.Pitch );
+        UB = wTb( bTua( [0 Design.L.UA 0]', beta(2) ), Attitude.Roll, Attitude.Pitch );
+        TB = wTb( bTtr( [0 Design.L.TR 0]', beta(3), beta(4) ), Attitude.Roll, Attitude.Pitch );
         
-        oT = wTb( bTla( laTlb( -Design.p.LBt, beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
-        
+        T = wTb( bTla( laTlb( -Design.p.LBt, beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+                
         %% Wheel Position & Orientation
-        % Known z = Rl
-        % Solve for x,y (Center)
-        % Solve for camber & steer 
-        %   - Know 3 points in the tire frame -> find basis vectors
-        %   - 
+        Base = T(1);
+        Track = T(2);
+        
         
     end
 
