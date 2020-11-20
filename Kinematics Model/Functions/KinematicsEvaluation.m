@@ -46,7 +46,7 @@ ub = repmat( [ 30  35  30  30  10  10  40], 2, 1 );
 ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
 [x, fval, exitflag, ~] = fmincon( ObjFun, beta0, [], [], [], [], lb, ub, [], optimset( 'Display', 'iter-detailed') );
 
-x;
+SuspensionMetrics( x, Design, Attitude, Target )
 
 %% Objective Function
     function Fval = ObjectiveFunction( beta, Design, Attitude, Target )
@@ -63,8 +63,38 @@ x;
         Fval = norm(UB) + norm(TB) + Rl.^2;
     end
 
-    function Fval = SuspensionMetrics( beta, Design, Attitude, Target )
-        %% World Coordinates
+    function [Base, Track, Steer, Camber, InstantCenter, RollCenter, Modulus] = ...
+            SuspensionMetrics( beta, Design, Attitude, Target )   
+        %% Wheel Position & Orientation
+        %%% Tire Position
+        T = wTb( bTla( laTlb( lbTt([0 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        
+        Base = T(1);
+        Track = T(2);
+         
+        %%% Solve for Tire Unit Vectors
+        xT = wTb( bTla( laTlb( lbTt([1 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        yT = wTb( bTla( laTlb( lbTt([0 1 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        zT = wTb( bTla( laTlb( lbTt([0 0 1]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        
+        xT = xT - T;
+        yT = yT - T;
+        zT = zT - T;
+        
+        %%% Solve for Steer & Camber
+        Camber = sign(zT(2)) * acosd( dot( zT, [0 0 1]' ) ); % Camber Angle [deg]
+        
+        k = cross( zT, [0 0 1]' ) ./ sind(Camber); % Camber Rotation Vector
+        
+        xTa = xT*cosd(Camber) + cross(k,xT)*sind(Camber) + ...
+            k*dot(k,xT)*(1-cosd(Camber)); % Ground Parallel Longitudinal Tire Axis
+        
+        yTa = yT*cosd(Camber) + cross(k,yT)*sind(Camber) + ...
+            k*dot(k,yT)*(1-cosd(Camber)); % Ground Parallel Lateral Tire Axis
+        
+        Steer = sign(xTa(2)) * acosd( dot( xT, [1 0 0]' ) ); % Steer Angle [deg]
+        
+        %% Roll Geometry Metrics
         LA = wTb( bTla( [0 0 0]', beta(1) ), Attitude.Roll, Attitude.Pitch );
         UA = wTb( bTua( [0 0 0]', beta(2) ), Attitude.Roll, Attitude.Pitch );
         TA = wTb( bTtr( [0 0 0]', beta(3), beta(4) ), Attitude.Roll, Attitude.Pitch );
@@ -73,14 +103,9 @@ x;
         UB = wTb( bTua( [0 Design.L.UA 0]', beta(2) ), Attitude.Roll, Attitude.Pitch );
         TB = wTb( bTtr( [0 Design.L.TR 0]', beta(3), beta(4) ), Attitude.Roll, Attitude.Pitch );
         
-        T = wTb( bTla( laTlb( -Design.p.LBt, beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
-                
-        %% Wheel Position & Orientation
-        Base = T(1);
-        Track = T(2);
         
-        
+             
     end
 
-    
+
 end
