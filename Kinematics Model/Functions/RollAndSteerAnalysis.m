@@ -37,7 +37,7 @@ tic
 for i = DesignAxle
     for j = 1 : size(Design,2)
         %%% Sweep Setup
-        N = 9;
+        N = 15;
         M = 3;
         
         % Ride Sweep
@@ -68,16 +68,16 @@ for i = DesignAxle
                     Sample.Steer = Sweep(i,j,k).Steer(m,n);
 
                     [Sweep(i,j,k).Base(m,n,:)         , Sweep(i,j,k).Track(m,n,:) , ...
-                     Sweep(i,j,k).Steer(m,n,:)        , Sweep(i,j,k).Camber(m,n,:), ...
+                     Sweep(i,j,k).Toe(m,n,:)        , Sweep(i,j,k).Camber(m,n,:), ...
                      Sweep(i,j,k).InstantCenter(m,n,:), Sweep(i,j,k).RollCenter(m,n,:), ...
                      Sweep(i,j,k).Modulus(m,n,:)] = ...
                         KinematicsEvaluation( Design(i,j), Sample, Target(i) );
                 end
             end
         end
-        fprintf( 'Design Sweep Complete: %4.0f sec elapsed \n', toc )
+        fprintf( 'Design Sweep Complete: %4.3f sec elapsed \n', toc )
     end
-    fprintf( 'Axle Sweep Complete: %4.0f sec elapsed \n', toc )
+    fprintf( 'Axle Sweep Complete: %4.3f sec elapsed \n', toc )
 end
 
 %%% Plotting
@@ -85,23 +85,48 @@ for i = DesignAxle
     figure; 
     subplot(3,2,1) % Bump Steer
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,1).Ride', Sweep(i,j,1).Toe(:,:,1)' - Sweep(i,j,1).Toe(:,end/2,1)); hold on;
+        plot(Sweep(i,j,1).Ride', Sweep(i,j,1).Toe(:,:,1)' - Sweep(i,j,1).Toe(:,floor(end/2),1)'); hold on;
     end
+    
+    xlabel( 'Ride' )
+    ylabel( 'Bump Steer' )
     
     subplot(3,2,3) % Roll Steer
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,2).Roll', Sweep(i,j,2).Toe(:,:,1)'); hold on;
+        plot(Sweep(i,j,2).Roll', Sweep(i,j,2).Toe(:,:,1)' - Sweep(i,j,2).Toe(:,floor(end/2),1)'); hold on;
     end
+    
+    xlabel( 'Roll' )
+    ylabel( 'Roll Steer' )
     
     subplot(3,2,5) % Steer-Steer
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,3).Steer, Sweep(i,j,3).Toe(:,:,1)); hold on;
+        plot(Sweep(i,j,3).Steer', Sweep(i,j,3).Toe(:,:,1)'); hold on;
     end
     
+    xlabel( 'Rack Displacement' )
+    ylabel( 'Steer Angle' )
+    
     subplot(3,2,2) % Camber Gain
-
+    for j = 1 : size(Design,2)
+        plot(Sweep(i,j,1).Ride', Sweep(i,j,1).Camber(:,:,1)'); hold on;
+    end
+    
+    xlabel( 'Ride' )
+    ylabel( 'Camber' )
+    
     subplot(3,2,4) % Roll Camber
-
-    subplot(3,2,4) % Steer Induced Camber
-
+    for j = 1 : size(Design,2)
+        plot(Sweep(i,j,2).Roll', Sweep(i,j,2).Camber(:,:,1)'); hold on;
+    end
+    xlabel( 'Roll' )
+    ylabel( 'Camber' )
+    
+    subplot(3,2,6) % Steer Induced Camber
+    for j = 1 : size(Design,2)
+        plot(Sweep(i,j,3).Steer', Sweep(i,j,3).Camber(:,:,1)'); hold on;
+    end
+    
+    xlabel( 'Rack Displacement' )
+    ylabel( 'Camber' )
 end
