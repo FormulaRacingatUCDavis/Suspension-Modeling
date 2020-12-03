@@ -9,11 +9,7 @@ clc; clear; close all;
 % - Optimization Toolbox
 % 
 % Blake Christierson - bechristierson@ucdavis.edu
-%
-% Version
-% 1.0 - Basic Model w/o Spring Geometry
-% 2.0 - Reformatted Script Structure
-% 3.0 - Vector Loop Solving Procedure
+% Stuart Scolaro - slscolaro@ucdavis.edu
 
 %% Boilerplate
 % Option to Load Previous Designs
@@ -32,6 +28,7 @@ else
     %%% Vehicle Level Targets
     Target.Wheelbase  = 1525;             % Nominal Wheelbase [mm]
     Target.WeightDist = 0.5;              % Static Front Weight Distribution []
+    Target.SprungMass = 225;              % Sprung Mass [kg]
     Target.CG(3)      = 8.5  .* (25.4);   % Nominal CG Height [in -> mm]
     Target.Ride       = 2    .* (25.4);   % Nominal Ride Height [in -> mm]
     Target.Rake       = 0;                % Nominal Rake Angle [deg]
@@ -48,11 +45,11 @@ else
     %%% Suspension Objectives
     Target(1).Track       =  1220;                    % Nominal Front Track Width [mm]
     Target(1).RollCenter  =  2.00 .* (25.4);          % Force-Based Roll Center Height [in -> mm]
-    Target(1).DraftAngle  =  3.00;                    % Draft Angle [deg]
+    Target(1).DraftAngle  =  5.00;                    % Draft Angle [deg]
     Target(1).Caster      =  3.00;                    % Caster [deg]
     Target(1).Camber      = -1.20;                    % Static Camber [deg]
-    Target(1).CamberGain  = -0.50 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
-    Target(1).Toe         =  2.00;                    % Static Toe (Positive Out) [deg]
+    Target(1).CamberGain  = -2.00 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
+    Target(1).Toe         =  0.50;                    % Static Toe (Positive Out) [deg]
     Target(1).Scrub       =  0.50 .* (25.4);          % Maximum Scrub [in -> mm]
     Target(1).KPI         =  5.00;                    % Maximum KPI [deg]
     Target(1).MotionRatio =  0.80;                    % Motion Ratio Target [] 
@@ -90,13 +87,13 @@ else
 
    % Outboard Pickups: Longitudinal |   Lateral   |  Vertical   |
     Bounds(1).LB =    [  0   ,  0   ;- 0.85,- 0.85;- 3.30,- 2.85] .* (25.4); % FLB Bounds (TCS) [in -> mm] 
-    Bounds(1).UB =    [  0   ,  0   ;- 2.00,- 0.85;  2.60,  3.70] .* (25.4); % FUB Bounds (TCS) [in -> mm] 
+    Bounds(1).UB =    [  0   ,  0   ;- 1.00,- 0.85;  2.60,  3.70] .* (25.4); % FUB Bounds (TCS) [in -> mm] 
     Bounds(1).TB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FTB Bounds (TCS) [in -> mm]
     Bounds(1).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FPB Bounds (LACS) [in -> mm] 
     Bounds(1).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FSB Bounds (RCS) [in -> mm]
 
     Bounds(2).LB =    [  0   ,  0   ;- 0.85,- 0.85;- 3.30,- 2.85] .* (25.4); % RLB Bounds (TCS) [in -> mm] 
-    Bounds(2).UB =    [  0   ,  0   ;- 2.00,- 0.85;  2.60,  3.70] .* (25.4); % RUB Bounds (TCS) [in -> mm] 
+    Bounds(2).UB =    [  0   ,  0   ;- 1.00,- 0.85;  2.60,  3.70] .* (25.4); % RUB Bounds (TCS) [in -> mm] 
     Bounds(2).TB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RTB Bounds (TCS) [in -> mm]
     Bounds(2).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RPB Bounds (LACS) [in -> mm] 
     Bounds(2).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RSB Bounds (RCS) [in -> mm]

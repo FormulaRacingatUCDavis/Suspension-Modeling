@@ -1,4 +1,4 @@
-function Sweep= RollAndSteerAnalysis( Target, Points, Design )
+function Sweep = RollAndSteerAnalysis( Target, Points, Design )
 %% Determine Design Axles
 DesignAxle = find(~cellfun(@isempty,{Target.FVSA}));
 
