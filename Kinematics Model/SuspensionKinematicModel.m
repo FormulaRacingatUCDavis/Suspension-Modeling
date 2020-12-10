@@ -32,7 +32,7 @@ else
     Target.CG(3)      = 8.5  .* (25.4);   % Nominal CG Height [in -> mm]
     Target.Ride       = 2    .* (25.4);   % Nominal Ride Height [in -> mm]
     Target.Rake       = 0;                % Nominal Rake Angle [deg]
-    Target.Rl         = 7.85 .* (25.4);   % Nominal Loading Radius [in -> mm]
+    Target.Rl         = 7.85 .* (25.4);   % Nominal Loaded Radius [in -> mm]
     
     Target.CG(1) = Target.Wheelbase * (1-Target.WeightDist); % C.G. to Front Axle (a) [mm]
     
@@ -47,11 +47,11 @@ else
     Target(1).RollCenter  =  2.00 .* (25.4);          % Force-Based Roll Center Height [in -> mm]
     Target(1).DraftAngle  =  5.00;                    % Draft Angle [deg]
     Target(1).Caster      =  3.00;                    % Caster [deg]
-    Target(1).Camber      = -1.20;                    % Static Camber [deg]
-    Target(1).CamberGain  = -2.00 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
+    Target(1).Camber      = -1.60;                    % Static Camber [deg]
+    Target(1).CamberGain  = -0.25 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
     Target(1).Toe         =  0.50;                    % Static Toe (Positive Out) [deg]
     Target(1).Scrub       =  0.50 .* (25.4);          % Maximum Scrub [in -> mm]
-    Target(1).KPI         =  5.00;                    % Maximum KPI [deg]
+    Target(1).KPI         =  5.00;                    % Target KPI [deg]
     Target(1).MotionRatio =  0.80;                    % Motion Ratio Target [] 
     
     Target(2).Track       =  1220;                    % Nominal Rear Track Width [mm] 
@@ -61,7 +61,7 @@ else
     Target(2).Camber      = -0.70;                    % Static Camber [deg]
     Target(2).CamberGain  = -1.20 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
     Target(2).Toe         = -0.50;                    % Static Toe (Positive Out) [deg]
-    Target(2).Scrub       =  0.25 .* (25.4);          % Maximum Scrub [in -> mm]
+    Target(2).Scrub       =  0.25 .* (25.4);          % Target Scrub [in -> mm]
     Target(2).KPI         = 15.00;                    % Maximum KPI [deg]
     Target(2).MotionRatio =  0.80;                    % Motion Ratio Target [] 
     
@@ -71,31 +71,31 @@ else
     % rules.
     
     % Inboard Pickups: Longitudinal |   Lateral   |   Vertical  | 
-    Bounds(1).LA =    [  0   ,  0   ;  0   ,  0   ;  0.50,  2.00] .* (25.4); % FLA Bounds (BCS) [in -> mm]
-    Bounds(1).UA =    [  0   ,  0   ;  0   ,  0   ;  4.50, 10.00] .* (25.4); % FUA Bounds (BCS) [in -> mm]
-    Bounds(1).TA =    [  0.00,  4.00;  8.70,  8.70;  2.50,  4.00] .* (25.4); % FTA Bounds (BCS) [in -> mm]
-    Bounds(1).RA =    [- 3.00,  0.00;  6.00,  9.50;  0.50, 10.00] .* (25.4); % FRA Bounds (BCS) [in -> mm]
+    Bounds(1).LA =    [  0   ,  0   ;  0   ,  0   ;  0.50,  2.00] .* (25.4); % FLA Bounds (XCS) [in -> mm]
+    Bounds(1).UA =    [  0   ,  0   ;  0   ,  0   ;  4.50, 10.00] .* (25.4); % FUA Bounds (XCS) [in -> mm]
+    Bounds(1).TA =    [  0.00,  4.00;  8.70,  8.70;  2.50,  4.00] .* (25.4); % FTA Bounds (XCS) [in -> mm]
+    Bounds(1).RA =    [- 3.00,  0.00;  6.00,  9.50;  0.50, 10.00] .* (25.4); % FRA Bounds (XCS) [in -> mm]
     Bounds(1).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % FPA Bounds (RCS) [in -> mm]
-    Bounds(1).SA =    [- 3.00,  0.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % FSA Bounds (BCS) [in -> mm]
+    Bounds(1).SA =    [- 3.00,  0.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % FSA Bounds (XCS) [in -> mm]
 
-    Bounds(2).LA =    [  0   ,  0   ;  0   ,  0   ;  0.50,  2.00] .* (25.4); % RLA Bounds (BCS) [in -> mm]
-    Bounds(2).UA =    [  0   ,  0   ;  0   ,  0   ;  4.50, 10.00] .* (25.4); % RUA Bounds (BCS) [in -> mm]
-    Bounds(2).TA =    [  2.25,  3.75;  8.70,  9.25;  4.00,  5.00] .* (25.4); % RTA Bounds (BCS) [in -> mm]
-    Bounds(2).RA =    [- 2.00,  2.00;  6.00,  9.50;  0.50, 10.00] .* (25.4); % RRA Bounds (BCS) [in -> mm]
+    Bounds(2).LA =    [  0   ,  0   ;  0   ,  0   ;  0.50,  2.00] .* (25.4); % RLA Bounds (XCS) [in -> mm]
+    Bounds(2).UA =    [  0   ,  0   ;  0   ,  0   ;  4.50, 10.00] .* (25.4); % RUA Bounds (XCS) [in -> mm]
+    Bounds(2).TA =    [  2.25,  3.75;  8.70,  9.25;  4.00,  5.00] .* (25.4); % RTA Bounds (XCS) [in -> mm]
+    Bounds(2).RA =    [- 2.00,  2.00;  6.00,  9.50;  0.50, 10.00] .* (25.4); % RRA Bounds (XCS) [in -> mm]
     Bounds(2).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % RPA Bounds (RCS) [in -> mm]
-    Bounds(2).SA =    [- 3.00,  3.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % RSA Bounds (BCS) [in -> mm]
+    Bounds(2).SA =    [- 3.00,  3.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % RSA Bounds (XCS) [in -> mm]
 
    % Outboard Pickups: Longitudinal |   Lateral   |  Vertical   |
-    Bounds(1).LB =    [  0   ,  0   ;- 0.85,- 0.85;- 3.30,- 2.85] .* (25.4); % FLB Bounds (TCS) [in -> mm] 
-    Bounds(1).UB =    [  0   ,  0   ;- 1.00,- 0.85;  2.60,  3.70] .* (25.4); % FUB Bounds (TCS) [in -> mm] 
+    Bounds(1).LB =    [  0   ,  0   ;- 0.85,- 0.85;- 3.10,- 2.70] .* (25.4); % FLB Bounds (TCS) [in -> mm] 
+    Bounds(1).UB =    [  0   ,  0   ;- 0.90,- 0.90;  3.20,  3.50] .* (25.4); % FUB Bounds (TCS) [in -> mm] 
     Bounds(1).TB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FTB Bounds (TCS) [in -> mm]
-    Bounds(1).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FPB Bounds (LACS) [in -> mm] 
+    Bounds(1).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FPB Bounds (ACS) [in -> mm] 
     Bounds(1).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FSB Bounds (RCS) [in -> mm]
 
     Bounds(2).LB =    [  0   ,  0   ;- 0.85,- 0.85;- 3.30,- 2.85] .* (25.4); % RLB Bounds (TCS) [in -> mm] 
     Bounds(2).UB =    [  0   ,  0   ;- 1.00,- 0.85;  2.60,  3.70] .* (25.4); % RUB Bounds (TCS) [in -> mm] 
     Bounds(2).TB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RTB Bounds (TCS) [in -> mm]
-    Bounds(2).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RPB Bounds (LACS) [in -> mm] 
+    Bounds(2).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RPB Bounds (ACS) [in -> mm] 
     Bounds(2).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RSB Bounds (RCS) [in -> mm]
     
     %%% Operating Condition Ranges
