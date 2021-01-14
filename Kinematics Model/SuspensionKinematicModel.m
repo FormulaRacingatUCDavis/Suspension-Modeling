@@ -11,6 +11,8 @@ clc; clear; close all;
 % Blake Christierson - bechristierson@ucdavis.edu
 % Stuart Scolaro - slscolaro@ucdavis.edu
 
+addpath( genpath( fileparts( which( 'SuspensionKinematicModel.m') ) ) )
+
 %% Boilerplate
 % Option to Load Previous Designs
 cd( fileparts( which( 'SuspensionKinematicModel.m' ) ) )
@@ -354,27 +356,5 @@ function [x, F, ExitFlag, Output] = RollOptimization( x0, Model, Target, Bounds,
         
         Ceq = [];
     end
-end
-function [Modulus, Fx, Fy, Mz, TR, Geometry]=SteeringEffortModulus[effectiveRadius, trackWidth, rideHeight]
-    Fx.Magnintude=1000; %N
-    Fy.Magnitude=1000; %N
-    Mz.Magnitude=1000; %N*m
-    KPA.Unit=(Design.FLB-Design.FUB)./norm(Design.FLB-Design.FUB);
-    TR.Unit=((Design.FTB+[0;trackWidth/2;effectiveRadisu-rideHeight])-Design.FTA)./...
-                norm((Design.FTB+[0;trackWidth/2;effectiveRadisu-rideHeight])-Design.FTA);
-    Fx.Normal=cross([1;0;0],KPA.Unit)./(norm(cross([1;0;0],KPA.Unit)));
-    Fy.Normal=cross([0;1;0],KPA.Unit)./(norm(cross([0;1;0],KPA.Unit)));
-    Fx.Distance=Fx.Normal.*(Design.FLB-[0;0;effectiveRadius]);
-    Fy.Distance=Fy.Normal.*(Design.FLB-[0;0;effectiveRadius]);
-    Geometry.Length.TB=cross(KPA.Unit,TR.Unit)./(norm(cross(KPA.Unit,TR.Unit)))
-    Modulus.Fx=norm((Fx.Magnitude.*cross(Fx.Normal,Fx.Distance))./...
-                cross(cross(KPA.Unit,TR.Unit)./...
-                (norm((cross(KPA.Unit,TR.Unit)))),Geometry.Length.TB)./Fx.Magnitude
-    Modulus.Fy=norm((Fy.Magnitude.*cross(Fy.Normal,Fy.Distance))./...
-                cross(cross(KPA.Unit,TR.Unit)./...
-                (norm((cross(KPA.Unit,TR.Unit)))),Geometry.Length.TB)./Fy.Magnitude
-    Modulus.Mz=Mz.Magnitude.*[0,0,1].*KPA.Unit./...
-                cross(cross(KPA.Unit,TR.Unit)./...
-                (norm((cross(KPA.Unit,TR.Unit))),Geometry.Length.TB)./Mz.Magnitude
 end
 %}
