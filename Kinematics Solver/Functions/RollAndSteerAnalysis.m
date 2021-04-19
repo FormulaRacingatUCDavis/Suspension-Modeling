@@ -27,7 +27,7 @@ title('3D Geometry Design Space Representation')
 xlabel('X [mm]'); ylabel('Y [mm]'); zlabel('Z [mm]');
 
 legend( {'LA', 'UA', 'TA', 'LB', 'UB', 'TB', ...
-    'Tire Center', 'Instant Center', 'Roll Center'} )
+    'Tire Center', 'Instant Center', 'Roll Center'}, 'Interpreter', 'latex' )
 
 axis equal; zlim([0 500]);
 view(135,15);
@@ -93,9 +93,9 @@ for i = DesignAxle
     
     xlabel( 'Ride' )
     ylabel( 'Bump Steer' )
-    legend( {['\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), 'mm']} )
+    legend( {['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']} )
     
     subplot(3,2,3) % Roll Steer
     for j = 1 : size(Design,2)
@@ -106,9 +106,9 @@ for i = DesignAxle
     
     xlabel( 'Roll' )
     ylabel( 'Roll Steer' )
-    legend( {['\delta_{r}=', num2str( Sweep(i,1,2).Steer(1,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(2,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(3,1,1) ), 'mm']} )
+    legend( {['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']} )
          
     subplot(3,2,5) % Steer-Steer
     for j = 1 : size(Design,2)
@@ -119,9 +119,9 @@ for i = DesignAxle
     
     xlabel( 'Rack Displacement' )
     ylabel( 'Steer Angle' )
-    legend( {['z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), 'mm'], ...
-             ['z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), 'mm'], ...
-             ['z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), 'mm']} )
+    legend( {['$z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), '$ [$mm$]'], ...
+             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
+             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']} )
          
     subplot(3,2,2) % Camber Gain
     for j = 1 : size(Design,2)
@@ -132,9 +132,9 @@ for i = DesignAxle
     
     xlabel( 'Ride' )
     ylabel( 'Camber' )
-    legend( {['\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), 'mm']} )
+    legend( {['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']} )
          
     subplot(3,2,4) % Roll Camber
     for j = 1 : size(Design,2)
@@ -145,9 +145,9 @@ for i = DesignAxle
     
     xlabel( 'Roll' )
     ylabel( 'Camber' )
-    legend( {['\delta_{r}=', num2str( Sweep(i,1,2).Steer(1,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(2,1,1) ), 'mm'], ...
-             ['\delta_{r}=', num2str( Sweep(i,1,2).Steer(3,1,1) ), 'mm']} )
+    legend( {['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(1,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(2,1,1) ), '$ [$mm$]'], ...
+             ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']} )
          
     subplot(3,2,6) % Steer Induced Camber
     for j = 1 : size(Design,2)
@@ -158,7 +158,7 @@ for i = DesignAxle
     
     xlabel( 'Rack Displacement' )
     ylabel( 'Camber' )
-    legend( {['z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), 'mm'], ...
-             ['z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), 'mm'], ...
-             ['z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), 'mm']} )
+    legend( {['$z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), '$ [$mm$]'], ...
+             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
+             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']} )
 end
