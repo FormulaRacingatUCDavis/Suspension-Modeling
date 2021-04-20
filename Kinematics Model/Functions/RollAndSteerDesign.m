@@ -2,7 +2,7 @@ function [Target, Points, Geometry, Design] = RollAndSteerDesign( ...
     Target, Bounds, N )
 
 %% Calculation Static FVSA and Instant Center
-Target.FVSA = 1 ./ ( atan( abs( Target.CamberGain ) ) ); % Front View Swing Arm (FVSA) [mm]
+Target.FVSA = 1 ./ ( tan( abs( Target.CamberGain ) ) ); % Front View Swing Arm (FVSA) [mm]
 
 WheelCircle = @(z) -sqrt( Target.FVSA.^2 - ( z - Target.Rl ).^2 ) + Target.Track ./ 2; % Circle Traced by FVSA
 ForceLine = @(z) ( z - Target.RollCenter ) .* ( -Target.Track ./ (2.*Target.RollCenter) ); % Desired Force Line (CP -> IC)
