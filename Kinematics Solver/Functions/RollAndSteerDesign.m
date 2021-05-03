@@ -29,12 +29,12 @@ end
 
 %% Generate World Coordinate Transformations
 % Transform from World Coordinate to Specific Frame
-wTb = @(p, L, zr, theta, phi) RotX(phi)*RotY(theta) * ( p + [L/2 0 0]') + [0 0 zr]';
-wTt = @(p, delta, gamma, phi, L, Tw, Re) RotZ(delta)*RotX(gamma)*RotY(-phi) * p + [L/2, Tw/2, Re]';
+wTb = @(p, L, zr, theta, phi) RotX(phi)*RotY(theta) * ( p + [L/2 0 0]') + [0 0 zr]'; %world to body
+wTt = @(p, delta, gamma, phi, L, Tw, Re) RotZ(delta)*RotX(gamma)*RotY(-phi) * p + [L/2, Tw/2, Re]'; %world to tire
 
 % Transform to World Coordinate from Specfic Frame
-bTw = @(p, L, zr, theta, phi) (RotX(phi)*RotY(theta) \ ( p - [0 0 zr]' )) - [L/2 0 0]'; 
-tTw = @(p, delta, gamma, phi, L, Tw, Re) ( RotZ(delta)*RotX(gamma)*RotY(-phi) ) \ ( p - [L/2 Tw/2 Re]' );
+bTw = @(p, L, zr, theta, phi) (RotX(phi)*RotY(theta) \ ( p - [0 0 zr]' )) - [L/2 0 0]'; %body to world
+tTw = @(p, delta, gamma, phi, L, Tw, Re) ( RotZ(delta)*RotX(gamma)*RotY(-phi) ) \ ( p - [L/2 Tw/2 Re]' ); %tire to world
 
 %% Apply Design Constraints
 if strcmp( Target.Axle, 'Front')

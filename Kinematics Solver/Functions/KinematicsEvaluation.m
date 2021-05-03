@@ -11,26 +11,33 @@ RotX = @(t) [1       0       0      ;  0       cosd(t) sind(t);  0       -sind(t
 RotY = @(t) [cosd(t) 0       sind(t);  0       1       0      ; -sind(t)  0       cosd(t)];
 RotZ = @(t) [cosd(t) sind(t) 0      ; -sind(t) cosd(t) 0      ;  0        0       1      ];
 
-% bTw = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]');
-wTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + Target.CG' + [-L/2 0 Attitude.Ride-50.8]';
 
-% tTw = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi)    * (pW - [xT yT Target.Rl]');
-% wTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ;
+% bTw = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]'); %body to world
+wTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + Target.CG' + [-L/2 0 Attitude.Ride-50.8]'; %world to body
 
-% laTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.LA(2))  * RotY(Design.a.LA(1)) * (pB - (Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'));
-bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)'          *  pA +  Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'  ;
 
-% uaTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.UA(2))  * RotY(Design.a.UA(1)) * (pB - (Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]'));
-bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)'          *  pA +  Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]'  ;
+% tTw = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]'); %tire to world
+% wTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ; %old copy - world to tire
+wTt = @(pT,xT,yT,gamma,delta) RotX(gamma)' * RotZ(delta)' *  pT + [xT yT 0]' ; %world to tire
 
-% lbTla = @(pA ,beta1,beta2,beta3) RotZ(beta3)  * RotX(beta1)  * RotY(beta2)  * (pA  - [0 Design.L.LA 0]');
-laTlb = @(pLB,beta1,beta2,beta3) RotY(beta2)' * RotX(beta1)' * RotZ(beta3)' *  pLB + [0 Design.L.LA 0]' ;
+% whTt
+% tTwh = @(camber,KPI,caster) Rotx(camber)'
 
-lbTt = @(pT ) pT  - Design.p.LBt;
-% tTlb = @(pLB) pLB + Design.p.LBt;
 
-% trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]'));
-bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' *  pTR +  Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]'  ;
+% laTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.LA(2))  * RotY(Design.a.LA(1)) * (pB - (Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]')); %lower a-arm to body
+bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)'          *  pA +  Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; %body to lower a-arm
+
+% uaTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.UA(2))  * RotY(Design.a.UA(1)) * (pB - (Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]')); %upper a-arm to body
+bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)'          *  pA +  Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; %body to upper a-arm
+
+% lbTla = @(pA ,beta1,beta2,beta3) RotZ(beta3)  * RotX(beta1)  * RotY(beta2)  * (pA  - [0 Design.L.LA 0]'); %lower ball joint to lower a-arm
+laTlb = @(pLB,beta1,beta2,beta3) RotY(beta2)' * RotX(beta1)' * RotZ(beta3)' *  pLB + [0 Design.L.LA 0]' ; %lower a-arm to lower ball joint
+
+lbTt = @(pT ) pT  - Design.p.LBt; %lower ball joint to tire
+% tTlb = @(pLB) pLB + Design.p.LBt; %tire to lower ball joint
+
+% trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]')); %tie rod to body
+bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' *  pTR +  Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]'  ; %body to tie rod
 
 %% Optimization Problem Setup & Execution
 if nargin < 4
@@ -108,7 +115,7 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         %%% KPI / Scrub Calculator
         
         %%% Steering Effort
-        Modulus = 0;  
+        %Modulus = trTt( wTt( [0 0 -Target.Rl]', xT, yT, Camber, [0], Steer ) .* [1 1 0]' );  
         
         %%% Debugging
         %{ 
