@@ -48,6 +48,8 @@ if nargin == 0
 end
 
 %% Computation
+NormalLoad = zeros( [size( LongAccTot ), 4] );
+
 %%% Total Weight Transfer
 dFzx = Mass .* LongAccTot .* CoG(:,3) ./ Wheelbase;
 dFzy = Mass .* LatAccTot  .* CoG(:,3) ./ mean(TrackWidth, 2);
