@@ -12,32 +12,33 @@ RotY = @(t) [cosd(t) 0       sind(t);  0       1       0      ; -sind(t)  0     
 RotZ = @(t) [cosd(t) sind(t) 0      ; -sind(t) cosd(t) 0      ;  0        0       1      ];
 
 
-% bTw = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]'); %body to world
-wTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + Target.CG' + [-L/2 0 Attitude.Ride-50.8]'; %world to body
+    
+% bTw = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]');
+wTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + Target.CG' + [-L/2 0 Attitude.Ride-50.8]';
 
 
-% tTw = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]'); %tire to world
-% wTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ; %old copy - world to tire
-wTt = @(pT,xT,yT,gamma,delta) RotX(gamma)' * RotZ(delta)' *  pT + [xT yT 0]' ; %world to tire
+%tTw = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]');
+wTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ;
 
-% whTt
-% tTwh = @(camber,KPI,caster) Rotx(camber)'
+% whTt = @
+tTwh = @(pWH,camber,KPI,caster) Roty(caster)' * Rotx(KPI)' * ( ( Rotx(-camber)' * pWH ) + [0 Target.Scrub 0]' ) + [0 0 Target.Rl/cosd(KPI)]';
+% tbTwh = @ (pWH) pWH - Design.tr;
 
 
-% laTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.LA(2))  * RotY(Design.a.LA(1)) * (pB - (Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]')); %lower a-arm to body
-bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)'          *  pA +  Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; %body to lower a-arm
+% laTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.LA(2))  * RotY(Design.a.LA(1)) * (pB - (Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'));
+bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)'          *  pA +  Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; 
 
-% uaTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.UA(2))  * RotY(Design.a.UA(1)) * (pB - (Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]')); %upper a-arm to body
-bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)'          *  pA +  Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; %body to upper a-arm
+% uaTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.UA(2))  * RotY(Design.a.UA(1)) * (pB - (Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]')); 
+bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)'          *  pA +  Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]'  ;
 
-% lbTla = @(pA ,beta1,beta2,beta3) RotZ(beta3)  * RotX(beta1)  * RotY(beta2)  * (pA  - [0 Design.L.LA 0]'); %lower ball joint to lower a-arm
-laTlb = @(pLB,beta1,beta2,beta3) RotY(beta2)' * RotX(beta1)' * RotZ(beta3)' *  pLB + [0 Design.L.LA 0]' ; %lower a-arm to lower ball joint
+% lbTla = @(pA ,beta1,beta2,beta3) RotZ(beta3)  * RotX(beta1)  * RotY(beta2)  * (pA  - [0 Design.L.LA 0]'); 
+laTlb = @(pLB,beta1,beta2,beta3) RotY(beta2)' * RotX(beta1)' * RotZ(beta3)' *  pLB + [0 Design.L.LA 0]' ; 
 
-lbTt = @(pT ) pT  - Design.p.LBt; %lower ball joint to tire
-% tTlb = @(pLB) pLB + Design.p.LBt; %tire to lower ball joint
+lbTt = @(pT ) pT  - Design.p.LBt; 
+% tTlb = @(pLB) pLB + Design.p.LBt; 
 
-% trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]')); %tie rod to body
-bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' *  pTR +  Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]'  ; %body to tie rod
+% trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]')); 
+bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' *  pTR +  Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]'  ; 
 
 %% Optimization Problem Setup & Execution
 if nargin < 4
@@ -74,21 +75,28 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
     function [Base, Track, Steer, Camber, InstantCenter, RollCenter, Modulus] = ...
             SuspensionMetrics( beta, Attitude )   
         %%% Wheel Position & Orientation
-        % Tire Position
+        % Wheel Position
         T = wTb( bTla( laTlb( lbTt([0 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
-        
+        % T = wTt([0 0 0]', Steer, Camber)
         Base = T(1);
         Track = T(2);
          
         % Solve for Tire Unit Vectors
         xT = wTb( bTla( laTlb( lbTt([1 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        % xT = wTt([1 0 0]', Steer, Camber)
         yT = wTb( bTla( laTlb( lbTt([0 1 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        % yT = wTt([0 1 0]', Steer, Camber)
         zT = wTb( bTla( laTlb( lbTt([0 0 1]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        % zT = wTt([0 0 1]', Steer, Camber)
         
         xT = xT - T;
         yT = yT - T;
         zT = zT - T;
          
+        % Solve for Tire Positions
+        posT = wTb( bTla( laTlb( lbTt( tTwh([0 0 0]', Target.Camber, Target.KPI, Target.Caster) ), beta(5), beta(6), beta(7) ),...
+            beta(1) ), Attitude.Roll, Attitude.Pitch );
+        
         % Solve for Steer & Camber [Sign Issues]
         Camber = acosd( dot( yT, [0 0 1]' ) ) - 90; % Camber Angle [deg]
 
@@ -115,7 +123,11 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         %%% KPI / Scrub Calculator
         
         %%% Steering Effort
-        %Modulus = trTt( wTt( [0 0 -Target.Rl]', xT, yT, Camber, [0], Steer ) .* [1 1 0]' );  
+        ToeBase = T-pTB;
+        dirTR = ( pTB-pTA ) ./ ( norm( pTB-pTA ) );
+        distT = posT - T;
+        
+        Modulus = cross( distT,[xT yT zT] ) ./ ( cross( ToeBase,dirT ) ) ;
         
         %%% Debugging
         %{ 
