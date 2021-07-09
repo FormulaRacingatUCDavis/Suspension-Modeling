@@ -167,4 +167,19 @@ for i = DesignAxle
              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
              'Interpreter','latex')
+         
+        figure % Steer-Induced Camber vs. Steering Angle
+    for j = 1 : size(Design,2)
+        plot(Sweep(i,j,3).Toe(1,:,:)', Sweep(i,j,3).Camber(1,:,1), 'r' ); hold on;
+        plot(Sweep(i,j,3).Toe(2,:,:)', Sweep(i,j,3).Camber(2,:,1), 'b' );
+        plot(Sweep(i,j,3).Toe(3,:,:)', Sweep(i,j,3).Camber(3,:,1), 'g' );
+    end
+    
+    xlabel( 'Steer Angle' )
+    ylabel( 'Camber' )
+    legend( {['$z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), '$ [$mm$]'], ...
+             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
+             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
+             'Interpreter', 'latex')
+         
 end

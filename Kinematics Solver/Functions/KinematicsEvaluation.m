@@ -26,7 +26,7 @@ wTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + Target.CG' + [-L/2 0 At
 % wTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ;
 
 % whTt = @
-tTwh = @(pWH,camber,KPI,caster) Roty(caster)' * Rotx(KPI)' * ( ( Rotx(-camber)' * pWH ) + [0 Target.Scrub 0]' ) + [0 0 Target.Rl/cosd(KPI)]';
+tTwh = @(pWH,camber,KPI,caster) RotY(caster)' * RotX(KPI)' * ( ( RotX(-camber)' * pWH ) + [0 Target.Scrub 0]' ) + [0 0 Target.Rl/cosd(KPI)]';
 % tbTwh = @ (pWH) pWH - Design.tr;
 
 % laTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.LA(2))  * RotY(Design.a.LA(1)) * (pB - (Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]')); %body to lower a-arm
@@ -146,8 +146,8 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         dirTR = ( pTB-pTA ) ./ ( norm( pTB-pTA ) );
         distT = posT - T;
         
-        Modulus = cross( distT,[xT yT zT] ) ./ ( cross( ToeBase,dirT ) ) ;
-        
+        %Modulus = cross( distT,[xT yT zT] ) ./ ( cross( ToeBase,dirT ) ) ;
+        Modulus = 0; 
         %%% Debugging
         %{ 
         plot3( LA(1), LA(2), LA(3), 'bx', ...
