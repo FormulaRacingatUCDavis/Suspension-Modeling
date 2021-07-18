@@ -93,6 +93,9 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
 
     function [Base, Track, Steer, Camber, InstantCenter, RollCenter, Modulus] = ...
             SuspensionMetrics( beta, Attitude )   
+        %%% Add Tire Model to Path
+        addpath( genpath( fileparts( which( 'ContactPatchLoads.m' ) ) ) )
+        
         %%% Wheel Position & Orientation
         % Wheel Position
         T = wTb( bTla( laTlb( lbTt([0 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
@@ -142,12 +145,42 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         %%% KPI / Scrub Calculator
         
         %%% Steering Effort
-        ToeBase = T-pTB;
-        dirTR = ( pTB-pTA ) ./ ( norm( pTB-pTA ) );
-        distT = posT - T;
+        % Solve for Tire Forces
+        % Tire = load(Hoosier_R25b...) ????
+        SlipAngle   = Steer;         %[degrees]
+        SlipRatio   = 0;             %[ ] Assume no slip
+        NormalLoad  = 700;           %[N] About 1/4 the weight of the car
+        Pressure    = 70;            %[kPa] 10 psi
+        Inclination = Target.Camber; %[degrees]
+        Velocity    = 10;            %[m/s]
+        Idx         = 1;             %[ ]
+        Model       = struct( 'Pure', 'Pacejka', 'Combined', 'MNC' );
+        [Fx, Fy, Mz, ~, ~] = ContactPatchLoads( SlipAngle, SlipRatio, NormalLoad, Pressure, Inclination, Velocity, Idx, Model );
         
-        %Modulus = cross( distT,[xT yT zT] ) ./ ( cross( ToeBase,dirT ) ) ;
-        Modulus = 0; 
+        % Solve for Moments from tire and tie rod
+        ToeBase = T-pTB; %distance from tie rod pickup point to center of wheel
+        distT = posT - T; %posT is contact patch, T is center of wheel
+        dirTR = ( pTB-pTA ) ./ ( norm( pTB-pTA ) ); %direction of the force in the tie rod
+        
+        %Solve for Modulus
+        TireForce = [Fx, Fy, Mz]; %tire forces matrix from tire model
+        TireDirection = [ xT; yT ]; %tire direction matrix
+        Modulus = zeros( size(TireForce) ); %initiailize modulus matrix
+        
+        for i = size(TireForce)
+            if i <= size(TireDirection,1)
+                ModulusMoment = cross( disT, TireDirection(i,:) ); %Tire Moment
+            else
+                ModulusMoment = [ 0, 0, 1 ]; %Tire Moment
+            end
+            Modulus(i) = [0, 0, ModulusMoment(3)] ./ (cross( ToeBase, dirTR) );
+        end
+        
+        %Solve for Steering Effort
+        TieRodForce = TireForce.*Modulus'; %Solves force into the tie rod
+        SteeringEffort = TieRodForce(2)*( 0.08788 / ( 2*pi ) ); %torque at the steering wheel needed to turn wheel [N*m] (rack travel 87.88mm/deg)
+        
+        
         %%% Debugging
         %{ 
         plot3( LA(1), LA(2), LA(3), 'bx', ...
