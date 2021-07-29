@@ -12,6 +12,8 @@ clc; clear; close all;
 % Stuart Scolaro - slscolaro@ucdavis.edu
 
 addpath( genpath( [fileparts( which( 'SuspensionKinematicModel.m' ) ), '\Functions'] ) )
+addpath( genpath( fileparts( which( 'ContactPatchLoads.m' ) ) ) )
+Target.TireParameter = load('Hoosier_R25B_16x75-10x7.mat'); 
 
 %% Boilerplate
 % Option to Load Previous Designs

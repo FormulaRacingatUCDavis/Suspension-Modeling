@@ -74,7 +74,7 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
 [beta, fval] = fmincon( ObjFun, beta0, [], [], [], [], lb, ub, [], optimset( 'Display', 'off' ) );
 
 [Base, Track, Steer, Camber, InstantCenter, RollCenter, Modulus] = ...
-    SuspensionMetrics( beta, Attitude );
+    SuspensionMetrics( beta, Attitude, Target );
 
 %%% Local Functions
     function Fval = ObjectiveFunction( beta, Design, Attitude, Target )
@@ -92,10 +92,7 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
     end
 
     function [Base, Track, Steer, Camber, InstantCenter, RollCenter, Modulus] = ...
-            SuspensionMetrics( beta, Attitude )   
-        %%% Add Tire Model to Path
-        addpath( genpath( fileparts( which( 'ContactPatchLoads.m' ) ) ) )
-        
+            SuspensionMetrics( beta, Attitude, Target )       
         %%% Wheel Position & Orientation
         % Wheel Position
         T = wTb( bTla( laTlb( lbTt([0 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
@@ -146,20 +143,22 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         
         %%% Steering Effort
         % Solve for Tire Forces
-        % Tire = load(Hoosier_R25b...) ????
+        Tire = Target.TireParameter.Tire.Pacejka;
         SlipAngle   = Steer;         %[degrees]
-        SlipRatio   = 0;             %[ ] Assume no slip
-        NormalLoad  = 700;           %[N] About 1/4 the weight of the car
+        SlipRatio   = 0.00;             %[ ] Assume no slip
+        NormalLoad  = 270 * 9.81/4;  %[N] About 1/4 the weight of the car
         Pressure    = 70;            %[kPa] 10 psi
         Inclination = Target.Camber; %[degrees]
         Velocity    = 10;            %[m/s]
         Idx         = 1;             %[ ]
         Model       = struct( 'Pure', 'Pacejka', 'Combined', 'MNC' );
-        [Fx, Fy, Mz, ~, ~] = ContactPatchLoads( SlipAngle, SlipRatio, NormalLoad, Pressure, Inclination, Velocity, Idx, Model );
+        
+        [Fx, Fy, Mz, ~, ~] = ContactPatchLoads( Tire, SlipAngle, ...
+            SlipRatio, NormalLoad, Pressure, Inclination, Velocity, Idx, Model );
         
         % Solve for Moments from tire and tie rod
         ToeBase = T-pTB; %distance from tie rod pickup point to center of wheel
-        distT = posT - T; %posT is contact patch, T is center of wheel
+        disT = posT - T; %posT is contact patch, T is center of wheel
         dirTR = ( pTB-pTA ) ./ ( norm( pTB-pTA ) ); %direction of the force in the tie rod
         
         %Solve for Modulus
