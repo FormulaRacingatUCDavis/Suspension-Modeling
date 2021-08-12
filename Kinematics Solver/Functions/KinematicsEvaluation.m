@@ -142,43 +142,43 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         %%% KPI / Scrub Calculator
         
         %%% Steering Effort
-        % Solve for Tire Forces
-        Tire = Target.TireParameter.Tire.Pacejka;
-        SlipAngle   = Steer;         %[degrees]
-        SlipRatio   = 0.00;             %[ ] Assume no slip
-        NormalLoad  = 270 * 9.81/4;  %[N] About 1/4 the weight of the car
-        Pressure    = 70;            %[kPa] 10 psi
-        Inclination = Target.Camber; %[degrees]
-        Velocity    = 10;            %[m/s]
-        Idx         = 1;             %[ ]
-        Model       = struct( 'Pure', 'Pacejka', 'Combined', 'MNC' );
-        
-        [Fx, Fy, Mz, ~, ~] = ContactPatchLoads( Tire, SlipAngle, ...
-            SlipRatio, NormalLoad, Pressure, Inclination, Velocity, Idx, Model );
-        
-        % Solve for Moments from tire and tie rod
-        ToeBase = T-pTB; %distance from tie rod pickup point to center of wheel
-        disT = posT - T; %posT is contact patch, T is center of wheel
-        dirTR = ( pTB-pTA ) ./ ( norm( pTB-pTA ) ); %direction of the force in the tie rod
-        
-        %Solve for Modulus
-        TireForce = [Fx, Fy, Mz]; %tire forces matrix from tire model
-        TireDirection = [ xT; yT ]; %tire direction matrix
-        Modulus = zeros( size(TireForce) ); %initiailize modulus matrix
-        
-        for i = size(TireForce)
-            if i <= size(TireDirection,1)
-                ModulusMoment = cross( disT, TireDirection(i,:) ); %Tire Moment
-            else
-                ModulusMoment = [ 0, 0, 1 ]; %Tire Moment
-            end
-            Modulus(i) = [0, 0, ModulusMoment(3)] ./ (cross( ToeBase, dirTR) );
-        end
-        
-        %Solve for Steering Effort
-        TieRodForce = TireForce.*Modulus'; %Solves force into the tie rod
-        SteeringEffort = TieRodForce(2)*( 0.08788 / ( 2*pi ) ); %torque at the steering wheel needed to turn wheel [N*m] (rack travel 87.88mm/deg)
-        
+%         % Solve for Tire Forces
+%         Tire = Target.TireParameter.Tire.Pacejka;
+%         SlipAngle   = Steer;         %[degrees]
+%         SlipRatio   = 0.00;             %[ ] Assume no slip
+%         NormalLoad  = 270 * 9.81/4;  %[N] About 1/4 the weight of the car
+%         Pressure    = 70;            %[kPa] 10 psi
+%         Inclination = Target.Camber; %[degrees]
+%         Velocity    = 10;            %[m/s]
+%         Idx         = 1;             %[ ]
+%         Model       = struct( 'Pure', 'Pacejka', 'Combined', 'MNC' );
+%         
+%         [Fx, Fy, Mz, ~, ~] = ContactPatchLoads( Tire, SlipAngle, ...
+%             SlipRatio, NormalLoad, Pressure, Inclination, Velocity, Idx, Model );
+%         
+%         % Solve for Moments from tire and tie rod
+%         ToeBase = T-pTB; %distance from tie rod pickup point to center of wheel
+%         disT = posT - T; %posT is contact patch, T is center of wheel
+%         dirTR = ( pTB-pTA ) ./ ( norm( pTB-pTA ) ); %direction of the force in the tie rod
+%         
+%         %Solve for Modulus
+%         TireForce = [Fx, Fy, Mz]; %tire forces matrix from tire model
+%         TireDirection = [ xT; yT ]; %tire direction matrix
+%         Modulus = zeros( size(TireForce) ); %initiailize modulus matrix
+%         
+%         for i = size(TireForce)
+%             if i <= size(TireDirection,1)
+%                 ModulusMoment = cross( disT, TireDirection(i,:) ); %Tire Moment
+%             else
+%                 ModulusMoment = [ 0, 0, 1 ]; %Tire Moment
+%             end
+%             Modulus(i) = [0, 0, ModulusMoment(3)] ./ (cross( ToeBase, dirTR) );
+%         end
+%         
+%         %Solve for Steering Effort
+%         TieRodForce = TireForce.*Modulus'; %Solves force into the tie rod
+%         SteeringEffort = TieRodForce(2)*( 0.08788 / ( 2*pi ) ); %torque at the steering wheel needed to turn wheel [N*m] (rack travel 87.88mm/deg)
+        Modulus = 0;
         
         %%% Debugging
         %{ 

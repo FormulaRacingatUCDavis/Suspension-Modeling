@@ -17,7 +17,7 @@ for i = DesignAxle
     plot3( (-1)^(i+1)*Target(i).Wheelbase/2, Target(i).InstantCenter(1), ...
         Target(i).InstantCenter(2), 'kx');
 end
-
+ylim([-1000 1000])
 fill3( [1000 1000 -1000 -1000], [750 -750 -750 750], zeros(4,1), [0.3 0.3 0.3] )
 fill3( [1000 1000 -1000 -1000], zeros(4,1), [0 500 500 0], [0.8 0.8 0.8], 'FaceAlpha', 0.1 )
 fill3( [1000 1000 -1000 -1000], [250 -250 -250 250], Target(1).Ride.*ones(4,1), [0, 0, 1], 'FaceAlpha', 0.1 )
@@ -126,19 +126,19 @@ for i = DesignAxle
              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
              'Interpreter', 'latex')
 
-    subplot(4,2,7) % Steering Modulus
-    for j = 1 : size(Design,2)
-        plot(Sweep(i,j,3).Steer(1,:,:)', Sweep(i,j,3).Modulus(1,:,1)', 'r' ); hold on;
-        plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Modulus(2,:,1)', 'b' );
-        plot(Sweep(i,j,3).Steer(3,:,:)', Sweep(i,j,3).Modulus(3,:,1)', 'g' );
-    end
-    
-    xlabel( 'Rack Displacement' )
-    ylabel( 'Tie Rod Force' )
-    legend( {['$z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), '$ [$mm$]'], ...
-             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
-             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
-             'Interpreter', 'latex')
+%     subplot(4,2,7) % Steering Modulus
+%     for j = 1 : size(Design,2)
+%         plot(Sweep(i,j,3).Steer(1,:,:)', Sweep(i,j,3).Modulus(1,:,1)', 'r' ); hold on;
+%         plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Modulus(2,:,1)', 'b' );
+%         plot(Sweep(i,j,3).Steer(3,:,:)', Sweep(i,j,3).Modulus(3,:,1)', 'g' );
+%     end
+%     
+%     xlabel( 'Rack Displacement' )
+%     ylabel( 'Tie Rod Force' )
+%     legend( {['$z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), '$ [$mm$]'], ...
+%              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
+%              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
+%              'Interpreter', 'latex')
          
     subplot(4,2,2) % Camber Gain
     for j = 1 : size(Design,2)
@@ -182,18 +182,42 @@ for i = DesignAxle
              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
              'Interpreter','latex')
          
-    subplot(4,2,8) % Steer-Induced Camber (Normalized)
+%     subplot(4,2,8) % Steer-Induced Camber (Normalized)
+%     for j = 1 : size(Design,2)
+%         plot(Sweep(i,j,3).Toe(1,:,:)', Sweep(i,j,3).Camber(1,:,1)' - Target.Camber, 'r' ); hold on;
+%         plot(Sweep(i,j,3).Toe(2,:,:)', Sweep(i,j,3).Camber(2,:,1)' - Target.Camber, 'b' );
+%         plot(Sweep(i,j,3).Toe(3,:,:)', Sweep(i,j,3).Camber(3,:,1)' - Target.Camber, 'g' );
+%     end
+%     
+%     xlabel( 'Steer Angle' )
+%     ylabel( 'Normalized Camber' )
+%     legend( {['$z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), '$ [$mm$]'], ...
+%              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
+%              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
+%              'Interpreter', 'latex')
+
+    figure % Steer-Steer
+    yyaxis left
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,3).Toe(1,:,:)', Sweep(i,j,3).Camber(1,:,1)' - Target.Camber, 'r' ); hold on;
-        plot(Sweep(i,j,3).Toe(2,:,:)', Sweep(i,j,3).Camber(2,:,1)' - Target.Camber, 'b' );
-        plot(Sweep(i,j,3).Toe(3,:,:)', Sweep(i,j,3).Camber(3,:,1)' - Target.Camber, 'g' );
-    end
+        plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Toe(2,:,1)', 'b' ); hold on;
+        plot( flip( Sweep(i,j,3).Steer(2,:,:)' ), -(Sweep(i,j,3).Toe(2,:,1)'), 'b--' );
+    end 
+    ylabel( 'Steer Angle' )
+
+    yyaxis right
+    for j = 1 : size(Design,2)
+        plot( Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Toe(2,:,1)' - ...
+            flip( -(Sweep(i,j,3).Toe(2,:,1)') ), 'r' ); hold on;
+        plot( Sweep(i,j,3).Steer(2,:,:)', zeros(length(Sweep(i,j,3).Steer(2,:,:)'),1), 'r--' )
+    end     
+    ylabel( {'Linear Deviation ($\alpha_{I}$ - $\alpha_{O}$) [$deg$]'},...
+             'Interpreter', 'latex');
+    ylim( [-5 5] )
     
-    xlabel( 'Steer Angle' )
-    ylabel( 'Normalized Camber' )
-    legend( {['$z_{r}=', num2str( Sweep(i,1,3).Ride(1,1,1) ), '$ [$mm$]'], ...
-             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(2,1,1) ), '$ [$mm$]'], ...
-             ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
-             'Interpreter', 'latex')
+    xlabel( 'Rack Displacement' )    
+    legend( {['Inside Tire Steer Angle'], ['Outside Tire Steer Angle'],...
+        ['Steer Angle Deviation'], ['Nominal Deviation']}, 'Interpreter', 'latex') 
+    title( 'Steer Steer Plot' );
+    
          
 end

@@ -13,7 +13,6 @@ clc; clear; close all;
 
 addpath( genpath( [fileparts( which( 'SuspensionKinematicModel.m' ) ), '\Functions'] ) )
 addpath( genpath( fileparts( which( 'ContactPatchLoads.m' ) ) ) )
-Target.TireParameter = load('Hoosier_R25B_16x75-10x7.mat'); 
 
 %% Boilerplate
 % Option to Load Previous Designs
@@ -37,6 +36,7 @@ else
     Target.Ride       = 2    .* (25.4);   % Nominal Ride Height [in -> mm]
     Target.Rake       = 0;                % Nominal Rake Angle [deg]
     Target.Rl         = 7.85 .* (25.4);   % Nominal Loaded Radius [in -> mm]
+    Target.TireParameter = load('Hoosier_R25B_16x75-10x7.mat'); %Tire Data
     
     Target.CG(1) = Target.Wheelbase * (1-Target.WeightDist); % C.G. to Front Axle (a) [mm]
     
