@@ -81,10 +81,13 @@ for i = DesignAxle
     fprintf( 'Axle Sweep Complete: %4.3f sec elapsed \n', toc )
 end
 
+%% Toe Base
+
+
 %%% Plotting
 for i = DesignAxle
     figure; 
-    subplot(4,2,1) % Bump Steer
+    subplot(3,2,1) % Bump Steer
     for j = 1 : size(Design,2)
         plot(Sweep(i,j,1).Ride(1,:,:)', Sweep(i,j,1).Toe(1,:,1)' - Sweep(i,j,1).Toe(1,ceil(end/2),1)', 'r' ); hold on;
         plot(Sweep(i,j,1).Ride(2,:,:)', Sweep(i,j,1).Toe(2,:,1)' - Sweep(i,j,1).Toe(2,ceil(end/2),1)', 'b' );
@@ -98,7 +101,7 @@ for i = DesignAxle
              ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']},...
              'Interpreter','latex')
     
-    subplot(4,2,3) % Roll Steer
+    subplot(3,2,3) % Roll Steer
     for j = 1 : size(Design,2)
         plot(Sweep(i,j,2).Roll(1,:,:)', Sweep(i,j,2).Toe(1,:,1)' - Sweep(i,j,2).Toe(1,ceil(end/2),1)', 'r' ); hold on;
         plot(Sweep(i,j,2).Roll(2,:,:)', Sweep(i,j,2).Toe(2,:,1)' - Sweep(i,j,2).Toe(2,ceil(end/2),1)', 'b' );
@@ -112,7 +115,7 @@ for i = DesignAxle
              ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']},...
              'Interpreter','latex')
          
-    subplot(4,2,5) % Steer-Steer
+    subplot(3,2,5) % Steer-Steer
     for j = 1 : size(Design,2)
         plot(Sweep(i,j,3).Steer(1,:,:)', Sweep(i,j,3).Toe(1,:,1)', 'r' ); hold on;
         plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Toe(2,:,1)', 'b' );
@@ -140,7 +143,7 @@ for i = DesignAxle
 %              ['$z_{r}=', num2str( Sweep(i,1,3).Ride(3,1,1) ), '$ [$mm$]']},...
 %              'Interpreter', 'latex')
          
-    subplot(4,2,2) % Camber Gain
+    subplot(3,2,2) % Camber Gain
     for j = 1 : size(Design,2)
         plot(Sweep(i,j,1).Ride(1,:,:)', Sweep(i,j,1).Camber(1,:,1)', 'r' ); hold on;
         plot(Sweep(i,j,1).Ride(2,:,:)', Sweep(i,j,1).Camber(2,:,1)', 'b' );
@@ -154,7 +157,7 @@ for i = DesignAxle
              ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']},...
              'Interpreter', 'latex' )
          
-    subplot(4,2,4) % Roll Camber
+    subplot(3,2,4) % Roll Camber
     for j = 1 : size(Design,2)
         plot(Sweep(i,j,2).Roll(1,:,:)', Sweep(i,j,2).Camber(1,:,1)', 'r' ); hold on;
         plot(Sweep(i,j,2).Roll(2,:,:)', Sweep(i,j,2).Camber(2,:,1)', 'b' );
@@ -168,7 +171,7 @@ for i = DesignAxle
              ['$\delta_{r}=', num2str( Sweep(i,1,1).Steer(3,1,1) ), '$ [$mm$]']},...
              'Interpreter','latex')
          
-    subplot(4,2,6) % Steer Induced Camber
+    subplot(3,2,6) % Steer Induced Camber
     for j = 1 : size(Design,2)
         plot(Sweep(i,j,3).Steer(1,:,:)', Sweep(i,j,3).Camber(1,:,1)', 'r' ); hold on;
         plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Camber(2,:,1)', 'b' );

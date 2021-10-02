@@ -2,7 +2,7 @@ function [Target, Points, Geometry, Design] = RollAndSteerDesign( ...
     Target, Bounds, N )
 
 %% Calculation Static FVSA and Instant Center
-Target.FVSA = 1 ./ ( atan( abs( Target.CamberGain ) ) ); % Front View Swing Arm (FVSA) [mm]
+Target.FVSA = 1 / ( tan( abs( Target.CamberGain ) ) ); % Front View Swing Arm (FVSA) [mm]
 
 WheelCircle = @(z) -sqrt( Target.FVSA.^2 - ( z - Target.Rl ).^2 ) + Target.Track ./ 2; % Circle Traced by FVSA
 ForceLine = @(z) ( z - Target.RollCenter ) .* ( -Target.Track ./ (2.*Target.RollCenter) ); % Desired Force Line (CP -> IC)
@@ -29,11 +29,11 @@ end
 
 %% Generate World Coordinate Transformations
 % Transform from World Coordinate to Specific Frame
-wTb = @(p, L, zr, theta, phi) RotX(phi)*RotY(theta) * ( p + [L/2 0 0]') + [0 0 zr]'; %world to body
+wTb = @(p, L, zr, theta, phi) RotX(phi)*RotY(theta) * ( p + [L/2 0 0]') + [Target.CG]'; %world to body
 wTt = @(p, delta, gamma, phi, L, Tw, Re) RotZ(delta)*RotX(gamma)*RotY(-phi) * p + [L/2, Tw/2, Re]'; %world to tire
 
 % Transform to World Coordinate from Specfic Frame
-bTw = @(p, L, zr, theta, phi) (RotX(phi)*RotY(theta) \ ( p - [0 0 zr]' )) - [L/2 0 0]'; %body to world
+bTw = @(p, L, zr, theta, phi) (RotX(phi)*RotY(theta) \ ( p - [0 0 zr]' )) - [Target.CG]'; %body to world
 tTw = @(p, delta, gamma, phi, L, Tw, Re) ( RotZ(delta)*RotX(gamma)*RotY(-phi) ) \ ( p - [L/2 Tw/2 Re]' ); %tire to world
 
 %% Apply Design Constraints
