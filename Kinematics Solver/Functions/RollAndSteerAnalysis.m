@@ -45,19 +45,19 @@ for i = DesignAxle
         Sweep(i,j,1).Ride  = repmat( linspace( Target(1).Ride-25.4, Target(1).Ride+25.4, N ), M, 1);
         Sweep(i,j,1).Roll  = zeros(M,N);
         Sweep(i,j,1).Pitch = zeros(M,N);
-        Sweep(i,j,1).Steer = linspace(-25,25,M)' * ones(1,N);
+        Sweep(i,j,1).Steer = linspace(-31,31,M)' * ones(1,N);
 
         % Roll Sweep
         Sweep(i,j,2).Ride  = zeros(M,N);
         Sweep(i,j,2).Roll  = repmat( linspace( -2.5, 2.5, N ), M, 1);
         Sweep(i,j,2).Pitch = zeros(M,N);
-        Sweep(i,j,2).Steer = linspace(-25,25,M)' * ones(1,N);
+        Sweep(i,j,2).Steer = linspace(-31,31,M)' * ones(1,N);
 
         % Steer Sweep
         Sweep(i,j,3).Ride  = linspace(Target(1).Ride-25.4, Target(1).Ride+25.4,M)' * ones(1,N);
         Sweep(i,j,3).Roll  = zeros(M,N);
         Sweep(i,j,3).Pitch = zeros(M,N);
-        Sweep(i,j,3).Steer = repmat( linspace( -25, 25, N ), M, 1);
+        Sweep(i,j,3).Steer = repmat( linspace( -31, 31, N ), M, 1);
 
         %%% Calculating Tire Orientation
         for k = 1 : size(Sweep,3)

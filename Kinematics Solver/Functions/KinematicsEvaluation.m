@@ -11,53 +11,36 @@ RotX = @(t) [1       0       0      ;  0       cosd(t) sind(t);  0       -sind(t
 RotY = @(t) [cosd(t) 0       sind(t);  0       1       0      ; -sind(t)  0       cosd(t)];
 RotZ = @(t) [cosd(t) sind(t) 0      ; -sind(t) cosd(t) 0      ;  0        0       1      ];
 
-% bTw = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]'); %world to body
-wTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + Target.CG' + [-L/2 0 Attitude.Ride-50.8]'; %body to world
+%bTe = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]'); %world to body
+%eTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + [-L/2 0 -Target.Rl]'; %body to world (old)
+eTb = @(p,L,Re,theta,phi) RotX(phi) * RotY(theta) * p + [L/2 0 Re]'; %body to world(earth)
 
+%tTe = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]'); %world to tire
+%eTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ; %old copy - tire to world
+%eTt = @(pT,xT,yT,gamma,delta) RotX(gamma)' * RotZ(delta)' *  pT + [xT yT 0]' ; %tire to world
 
-% tTw = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]'); %world to tire
-% wTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ; %old copy - tire to world
-% wTt = @(pT,xT,yT,gamma,delta) RotX(gamma)' * RotZ(delta)' *  pT + [xT yT 0]' ; %tire to world
-    
-% bTw = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]');
-wTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + Target.CG' + [-L/2 0 Attitude.Ride-50.8]';
+%tTe = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]');
+%eTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ;
 
-%tTw = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]');
-% wTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ;
+%whTt = @
+tTw = @(pWH, Re, camber, caster) RotX(camber)*RotY(caster)* pWH + [0 Re*tand(camber) Re]'; %wheel to tire
+%tbTwh = @ (pWH) pWH - Design.tr;
 
-% whTt = @
-tTwh = @(pWH,camber,KPI,caster) RotY(caster)' * RotX(KPI)' * ( ( RotX(-camber)' * pWH ) + [0 Target.Scrub 0]' ) + [0 0 Target.Rl/cosd(KPI)]';
-% tbTwh = @ (pWH) pWH - Design.tr;
+%laTb = @(pB,beta) RotX(beta) * RotZ(Design.a.LA(2)) * RotY(Design.a.LA(1)) * (pB - Design.p.LAb); %body to lower a-arm
+bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)' *  pA +  Design.p.LAb; %lower a-arm to body
 
-% laTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.LA(2))  * RotY(Design.a.LA(1)) * (pB - (Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]')); %body to lower a-arm
-bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)'          *  pA +  Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; %lower a-arm to body
+%uaTb = @(pB,beta) RotX(beta) * RotZ(Design.a.UA(2)) * RotY(Design.a.UA(1)) * (pB - Design.p.UAb); %body to upper a-arm
+bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)' * pA + Design.p.UAb; %upper a-arm to body
 
-% uaTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.UA(2))  * RotY(Design.a.UA(1)) * (pB - (Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]')); %body to upper a-arm
-bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)'          *  pA +  Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; %upper a-arm to body
-
-% lbTla = @(pA ,beta1,beta2,beta3) RotZ(beta3)  * RotX(beta1)  * RotY(beta2)  * (pA  - [0 Design.L.LA 0]'); %lower a-arm to lower ball joint
+%lbTla = @(pA,beta1,beta2,beta3) RotZ(beta3) * RotX(beta1) * RotY(beta2) * (pA  - [0 Design.L.LA 0]'); %lower a-arm to lower ball joint
 laTlb = @(pLB,beta1,beta2,beta3) RotY(beta2)' * RotX(beta1)' * RotZ(beta3)' *  pLB + [0 Design.L.LA 0]' ; %lower ball joint to lower a-arm
 
-lbTt = @(pT ) pT  - Design.p.LBt; %tire to lower ball joint
-% tTlb = @(pLB) pLB + Design.p.LBt; %lower ball joint to tire
+lbTw = @(pT) pT - Design.p.LBt; %wheel to lower ball joint
+%wTlb = @(pLB) pLB + Design.p.LBt; %lower ball joint to wheel
 
-% trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]')); %body to tie rod
-bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' *  pTR +  Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]'  ; %tie rod to body
+% trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [0 Attitude.Steer 0]')); %body to tie rod
+bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' * pTR + Design.p.TAb + [0 Attitude.Steer 0]'; %tie rod to body
 
-% laTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.LA(2))  * RotY(Design.a.LA(1)) * (pB - (Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'));
-bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)'          *  pA +  Design.p.LAb + [L/2 0 Target.Ride-Target.CG(3)]'  ; 
-
-% uaTb = @(pB,beta) RotX(beta)            * RotZ(Design.a.UA(2))  * RotY(Design.a.UA(1)) * (pB - (Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]')); 
-bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)'          *  pA +  Design.p.UAb + [L/2 0 Target.Ride-Target.CG(3)]'  ;
-
-% lbTla = @(pA ,beta1,beta2,beta3) RotZ(beta3)  * RotX(beta1)  * RotY(beta2)  * (pA  - [0 Design.L.LA 0]'); 
-laTlb = @(pLB,beta1,beta2,beta3) RotY(beta2)' * RotX(beta1)' * RotZ(beta3)' *  pLB + [0 Design.L.LA 0]' ; 
-
-lbTt = @(pT ) pT  - Design.p.LBt; 
-% tTlb = @(pLB) pLB + Design.p.LBt; 
-
-% trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]')); 
-bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' *  pTR +  Design.p.TAb + [L/2 Attitude.Steer Target.Ride-Target.CG(3)]'  ;
 
 %% Optimization Problem Setup & Execution
 if nargin < 4
@@ -78,13 +61,13 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
 
 %%% Local Functions
     function Fval = ObjectiveFunction( beta, Design, Attitude, Target )
-        UB = bTla( laTlb( lbTt(Design.p.UBt), beta(5), beta(6), beta(7) ), beta(1) ) - ...
+        UB = bTla( laTlb( lbTw(Design.p.UBt), beta(5), beta(6), beta(7) ), beta(1) ) - ...
              bTua( [0 Design.L.UA 0]', beta(2) );
         
-        TB = bTla( laTlb( lbTt(Design.p.TBt), beta(5), beta(6), beta(7) ), beta(1) ) - ...
+        TB = bTla( laTlb( lbTw(Design.p.TBt), beta(5), beta(6), beta(7) ), beta(1) ) - ...
              bTtr( [0 Design.L.TR 0]', beta(3), beta(4) );
         
-        oT = wTb( bTla( laTlb( -Design.p.LBt, beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        oT = eTb( bTla( laTlb( -Design.p.LBt, beta(5), beta(6), beta(7) ), beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
          
         Rl = oT(3) - Target.Rl;
         
@@ -95,17 +78,17 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
             SuspensionMetrics( beta, Attitude, Target )       
         %%% Wheel Position & Orientation
         % Wheel Position
-        T = wTb( bTla( laTlb( lbTt([0 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        T = eTb( bTla( laTlb( lbTw([0 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
         % T = wTt([0 0 0]', Steer, Camber)
         Base = T(1);
         Track = T(2);
          
         % Solve for Tire Unit Vectors
-        xT = wTb( bTla( laTlb( lbTt([1 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        xT = eTb( bTla( laTlb( lbTw([1 0 0]'), beta(5), beta(6), beta(7) ), beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
         % xT = wTt([1 0 0]', Steer, Camber)
-        yT = wTb( bTla( laTlb( lbTt([0 1 0]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        yT = eTb( bTla( laTlb( lbTw([0 1 0]'), beta(5), beta(6), beta(7) ), beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
         % yT = wTt([0 1 0]', Steer, Camber)
-        zT = wTb( bTla( laTlb( lbTt([0 0 1]'), beta(5), beta(6), beta(7) ), beta(1) ), Attitude.Roll, Attitude.Pitch );
+        zT = eTb( bTla( laTlb( lbTw([0 0 1]'), beta(5), beta(6), beta(7) ), beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
         % zT = wTt([0 0 1]', Steer, Camber)
         
         xT = xT - T;
@@ -113,8 +96,8 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         zT = zT - T;
          
         % Solve for Tire Positions
-        posT = wTb( bTla( laTlb( lbTt( tTwh([0 0 0]', Target.Camber, Target.KPI, Target.Caster) ), beta(5), beta(6), beta(7) ),...
-            beta(1) ), Attitude.Roll, Attitude.Pitch );
+        posT = eTb( bTla( laTlb( lbTw( tTw([0 0 0]', Target.Camber, Target.KPI, Target.Caster) ), beta(5), beta(6), beta(7) ),...
+            beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
         
         % Solve for Steer & Camber [Sign Issues]
         Camber = acosd( dot( yT, [0 0 1]' ) ) - 90; % Camber Angle [deg]
@@ -128,13 +111,13 @@ ObjFun = @(beta) ObjectiveFunction( beta, Design, Attitude, Target );
         Steer = -sign(yTa(1)) * acosd( dot( yTa, [0 1 0]' ) ); % Steer Angle [deg]
         
         %%% Roll Geometry Metrics
-        pLA = wTb( bTla( [0 0 0]', beta(1) ), Attitude.Roll, Attitude.Pitch );
-        pUA = wTb( bTua( [0 0 0]', beta(2) ), Attitude.Roll, Attitude.Pitch );
-        pTA = wTb( bTtr( [0 0 0]', beta(3), beta(4) ), Attitude.Roll, Attitude.Pitch );
+        pLA = eTb( bTla( [0 0 0]', beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
+        pUA = eTb( bTua( [0 0 0]', beta(2) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
+        pTA = eTb( bTtr( [0 0 0]', beta(3), beta(4) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
         
-        pLB = wTb( bTla( [0 Design.L.LA 0]', beta(1) ), Attitude.Roll, Attitude.Pitch );
-        pUB = wTb( bTua( [0 Design.L.UA 0]', beta(2) ), Attitude.Roll, Attitude.Pitch );
-        pTB = wTb( bTtr( [0 Design.L.TR 0]', beta(3), beta(4) ), Attitude.Roll, Attitude.Pitch );
+        pLB = eTb( bTla( [0 Design.L.LA 0]', beta(1) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
+        pUB = eTb( bTua( [0 Design.L.UA 0]', beta(2) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
+        pTB = eTb( bTtr( [0 Design.L.TR 0]', beta(3), beta(4) ), L, Target.Rl, Attitude.Roll, Attitude.Pitch );
                
         InstantCenter = LineIntersection( pLA(2:3), pLB(2:3), pUA(2:3), pUB(2:3) );
         RollCenter = LineIntersection( InstantCenter, [Track,0], [0,0], [0,1] );

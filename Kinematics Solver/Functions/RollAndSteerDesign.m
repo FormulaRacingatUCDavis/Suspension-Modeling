@@ -8,7 +8,7 @@ WheelCircle = @(z) -sqrt( Target.FVSA.^2 - ( z - Target.Rl ).^2 ) + Target.Track
 ForceLine = @(z) ( z - Target.RollCenter ) .* ( -Target.Track ./ (2.*Target.RollCenter) ); % Desired Force Line (CP -> IC)
 
 Target.InstantCenter(2) = fsolve( @(z) WheelCircle(z) - ForceLine(z), 0, optimset('Display','off') ); % Solve Intersection Problem
-Target.InstantCenter(1) = WheelCircle( Target.InstantCenter(2) ); % Static Instant Centers [mm,mm]
+Target.InstantCenter(1) = WheelCircle( Target.InstantCenter(2) ); % Static Instant Centers [mm,mm] (y,z)
 
 %% Generate Potential A-Arm & Tie Rod Points  
 % Get Relevant Lower & Upper Bounds
@@ -28,13 +28,17 @@ for i = 1 : N.Design
 end
 
 %% Generate World Coordinate Transformations
+% World Frame (e) = [Midplane, Center of Car, Road]     (x,y,z)
+% Body Frame  (b) = [Axle, Center of Car, Wheel Center] (x,y,z)
+% Wheel Frame (w) = [Axle, Wheel Center, Wheel Center]  (x,y,z)
+
 % Transform from World Coordinate to Specific Frame
-wTb = @(p, L, zr, theta, phi) RotX(phi)*RotY(theta) * ( p + [L/2 0 0]') + [Target.CG]'; %world to body
-wTt = @(p, delta, gamma, phi, L, Tw, Re) RotZ(delta)*RotX(gamma)*RotY(-phi) * p + [L/2, Tw/2, Re]'; %world to tire
+eTb = @(p, L, Re, theta, phi) RotX(phi)*RotY(theta) * p + [L/2 0 Re]'; %body to world(earth)
+eTw = @(p, delta, gamma, phi, L, Tw, Re) RotZ(delta)*RotX(gamma)*RotY(-phi) * p + [L/2, Tw/2, Re]'; %wheel to world(earth)
 
 % Transform to World Coordinate from Specfic Frame
-bTw = @(p, L, zr, theta, phi) (RotX(phi)*RotY(theta) \ ( p - [0 0 zr]' )) - [Target.CG]'; %body to world
-tTw = @(p, delta, gamma, phi, L, Tw, Re) ( RotZ(delta)*RotX(gamma)*RotY(-phi) ) \ ( p - [L/2 Tw/2 Re]' ); %tire to world
+bTe = @(p, L, Re, theta, phi) RotX(phi)*RotY(theta) \ ( p - [L/2 0 Re]' ); %world(earth) to body
+wTe = @(p, delta, gamma, phi, L, Tw, Re) ( RotZ(delta)*RotX(gamma)*RotY(-phi) ) \ ( p - [L/2 Tw/2 Re]' ); %world(earth) to wheel
 
 %% Apply Design Constraints
 if strcmp( Target.Axle, 'Front')
@@ -43,17 +47,17 @@ else
     L = -Target.Wheelbase;
 end
 
-Points.LA.W = wTb( Points.LA.B, L, Target.Ride, Target.Rake, 0 );
-Points.UA.W = wTb( Points.UA.B, L, Target.Ride, Target.Rake, 0 );
-Points.TA.W = wTb( Points.TA.B, L, Target.Ride, Target.Rake, 0 );
-Points.LB.W = wTt( Points.LB.T, Target.Toe, Target.Camber, Target.Caster, ...
+Points.LA.W = eTb( Points.LA.B, L, Target.Rl, Target.Rake, 0 );
+Points.UA.W = eTb( Points.UA.B, L, Target.Rl, Target.Rake, 0 );
+Points.TA.W = eTb( Points.TA.B, L, Target.Rl, Target.Rake, 0 );
+Points.LB.W = eTw( Points.LB.T, Target.Toe, Target.Camber, Target.Caster, ...
     L, Target.Track, Target.Rl );
-Points.UB.W = wTt( Points.UB.T, Target.Toe, Target.Camber, Target.Caster, ...
+Points.UB.W = eTw( Points.UB.T, Target.Toe, Target.Camber, Target.Caster, ...
     L, Target.Track, Target.Rl );
-Points.TB.W = wTt( Points.TB.T, Target.Toe, Target.Camber, Target.Caster, ...
+Points.TB.W = eTw( Points.TB.T, Target.Toe, Target.Camber, Target.Caster, ...
     L, Target.Track, Target.Rl );
 
-% Find Inboard A-Arm Pickups (via Target Instant Center & Monocoque Surface)
+% Find Inboard A-Arm Pickups (via Target Instant Center & Chassis Surface)
 InboardAArmY = @(y, pB, IC, TA, d) (tand(90-d)*(y - TA(2,:)) + TA(3,:)) - ...
     ((pB(3,:)-IC(2)) ./ (pB(2,:)-IC(1)) .* (y - pB(2,:)) + pB(3,:));
 InboardAArmZ = @(y, pB, IC) (pB(3,:)-IC(2)) ./ (pB(2,:)-IC(1)) .* (y - pB(2,:)) + pB(3,:);
@@ -80,11 +84,11 @@ if strcmp(Target.Axle, 'Rear')
     Points.TA.W(1,:) = Points.TB.W(1,:);
 end
 
-Points.LA.B = bTw( Points.LA.W, L, Target.Ride, Target.Rake, 0 );
-Points.UA.B = bTw( Points.UA.W, L, Target.Ride, Target.Rake, 0 );
-Points.TA.B = bTw( Points.TA.W, L, Target.Ride, Target.Rake, 0 );
+Points.LA.B = bTe( Points.LA.W, L, Target.Rl, Target.Rake, 0 );
+Points.UA.B = bTe( Points.UA.W, L, Target.Rl, Target.Rake, 0 );
+Points.TA.B = bTe( Points.TA.W, L, Target.Rl, Target.Rake, 0 );
 
-Points.TB.T = tTw( Points.TB.W, Target.Toe, Target.Camber, Target.Caster, ...
+Points.TB.T = wTe( Points.TB.W, Target.Toe, Target.Camber, Target.Caster, ...
     L, Target.Track, Target.Rl );
 
 % Calculate Member Lengths
