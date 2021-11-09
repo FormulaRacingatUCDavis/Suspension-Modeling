@@ -25,7 +25,7 @@ if File.Name~= 0
     load(File.Name);
 else    
     %% User Inputs
-    DesignAxle = [2]; % 1 - Front Axle
+    DesignAxle = [1]; % 1 - Front Axle
                       % 2 - Rear Axle
                       % [1 2] - Both Axles
     
@@ -33,11 +33,11 @@ else
     Target.Wheelbase  = 60.5  .* (25.4);  % Nominal Wheelbase [in -> mm]
     Target.WeightDist = 0.5;              % Static Front Weight Distribution []
     Target.SprungMass = 225;              % Sprung Mass [kg]
-    Target.CG(3)      = 10.15  .* (25.4); % Nominal CG Height [in -> mm]
-    Target.CG(2)      = 0 .* (25.4);      % Nominal CG Lateral [in -> mm]
-    Target.Ride       = 2 .* (25.4);   % Nominal Ride Height [in -> mm]
+    Target.CG(3)      = 10.15 .* (25.4);  % Nominal CG Height [in -> mm]
+    Target.CG(2)      = 11.00 .* (25.4);  % Nominal CG Lateral [in -> mm]
+    Target.Ride       = 2.00  .* (25.4);  % Nominal Ride Height [in -> mm]
     Target.Rake       = 0;                % Nominal Rake Angle [deg]
-    Target.Rl         = 7.85 .* (25.4);   % Nominal Loaded Radius [in -> mm]
+    Target.Rl         = 7.85  .* (25.4);  % Nominal Loaded Radius [in -> mm]
     %Target.Tire = load('Hoosier_R25B_16x75-10x7.mat'); %Tire Data
     
     Target.CG(1) = Target.Wheelbase * (1-Target.WeightDist); % C.G. to Front Axle (a) [mm]
@@ -79,14 +79,14 @@ else
     % Inboard Pickups: Longitudinal |   Lateral   |   Vertical  | 
     Bounds(1).LA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % FLA Bounds (XCS) [in -> mm]
     Bounds(1).UA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % FUA Bounds (XCS) [in -> mm]
-    Bounds(1).TA =    [  4.00,  4.00;  8.70,  8.70;- 1.00,- 1.00] .* (25.4); % FTA Bounds (XCS) [in -> mm]
+    Bounds(1).TA =    [  2.50,  2.50;  8.70,  8.70;- 1.00,- 1.00] .* (25.4); % FTA Bounds (XCS) [in -> mm]
     Bounds(1).RA =    [- 3.00,  2.00;  6.00,  9.50;  8.00, 10.00] .* (25.4); % FRA Bounds (XCS) [in -> mm]
     Bounds(1).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % FPA Bounds (RCS) [in -> mm]
     Bounds(1).SA =    [- 3.00,  0.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % FSA Bounds (XCS) [in -> mm]
 
     Bounds(2).LA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % RLA Bounds (XCS) [in -> mm]
     Bounds(2).UA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % RUA Bounds (XCS) [in -> mm]
-    Bounds(2).TA =    [  0   ,  0   ;  8.50,  8.50;  0   ,  0   ] .* (25.4); % RTA Bounds (XCS) [in -> mm]
+    Bounds(2).TA =    [  0   ,  0   ;  8.50,  8.50;  0.14,  0.14] .* (25.4); % RTA Bounds (XCS) [in -> mm]
     Bounds(2).RA =    [  4.00,  8.00;  8.00, 10.00;  9.00, 11.00] .* (25.4); % RRA Bounds (XCS) [in -> mm]
     Bounds(2).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % RPA Bounds (RCS) [in -> mm]
     Bounds(2).SA =    [ 11.00, 11.00;  8.00, 12.00;  2.00,  4.00] .* (25.4); % RSA Bounds (XCS) [in -> mm]
@@ -98,9 +98,9 @@ else
     Bounds(1).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FPB Bounds (ACS) [in -> mm] 
     Bounds(1).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FSB Bounds (RCS) [in -> mm]
 
-    Bounds(2).LB =    [  0   ,  0   ;- 0.87,- 0.87;- 3.20,- 2.70] .* (25.4); % RLB Bounds (WCS) [in -> mm] 
-    Bounds(2).UB =    [  0   ,  0   ;- 1.81,- 1.45;  2.60,  3.45] .* (25.4); % RUB Bounds (WCS) [in -> mm] 
-    Bounds(2).TB =    [  2.25,  3.50;- 1.81,- 0.87;  0   ,  0   ] .* (25.4); % RTB Bounds (WCS) [in -> mm]
+    Bounds(2).LB =    [  0   ,  0   ;-24.39,-24.39;-83.35,-83.35];% .* (25.4); % RLB Bounds (WCS) [in -> mm] 
+    Bounds(2).UB =    [  0   ,  0   ;-51.55,-51.55; 85.73, 85.73];% .* (25.4); % RUB Bounds (WCS) [in -> mm] 
+    Bounds(2).TB =    [ 76.2 , 76.2 ;-25.98,-25.98;  0   ,  0   ];% .* (25.4); % RTB Bounds (WCS) [in -> mm]
     Bounds(2).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RPB Bounds (ACS) [in -> mm] 
     Bounds(2).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % RSB Bounds (RCS) [in -> mm]
     

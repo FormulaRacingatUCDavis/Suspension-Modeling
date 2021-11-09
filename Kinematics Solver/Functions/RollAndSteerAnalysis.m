@@ -202,8 +202,8 @@ for i = DesignAxle
     figure % Steer-Steer
     yyaxis left
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Toe(2,:,1)', 'b' ); hold on;
-        plot( flip( Sweep(i,j,3).Steer(2,:,:)' ), -(Sweep(i,j,3).Toe(2,:,1)'), 'b--' );
+        plot(Sweep(i,j,3).Steer(2,:,:)', -Sweep(i,j,3).Toe(2,:,1)', 'b' ); hold on;
+        plot( flip( Sweep(i,j,3).Steer(2,:,:)' ), (Sweep(i,j,3).Toe(2,:,1)'), 'b--' );
     end 
     ylabel( 'Steer Angle' )
 
