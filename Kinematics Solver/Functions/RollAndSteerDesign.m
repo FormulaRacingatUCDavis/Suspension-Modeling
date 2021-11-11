@@ -33,12 +33,12 @@ end
 % Wheel Frame (w) = [Axle, Wheel Center, Wheel Center]  (x,y,z)
 
 % Transform from World Coordinate to Specific Frame
-eTb = @(p, L, Re, theta, phi) RotX(phi)*RotY(theta) * p + [L/2 0 Re]'; %body to world(earth)
-eTw = @(p, delta, gamma, phi, L, Tw, Re) RotZ(delta)*RotX(gamma)*RotY(-phi) * p + [L/2, Tw/2, Re]'; %wheel to world(earth)
+eTb = @(p, L, Re, phi, theta) RotX(phi)*RotY(theta) * p + [L/2 0 Re]'; %body to world(earth)
+eTw = @(p, delta, gamma, phi, L, Tw, Re) RotZ(delta) * RotX(gamma) * RotY(-phi) * p + [L/2, Tw/2, Re]'; %wheel to world(earth)
 
 % Transform to World Coordinate from Specfic Frame
-bTe = @(p, L, Re, theta, phi) RotX(phi)*RotY(theta) \ ( p - [L/2 0 Re]' ); %world(earth) to body
-wTe = @(p, delta, gamma, phi, L, Tw, Re) ( RotZ(delta)*RotX(gamma)*RotY(-phi) ) \ ( p - [L/2 Tw/2 Re]' ); %world(earth) to wheel
+bTe = @(p, L, Re, phi, theta) RotX(phi)*RotY(theta) \ ( p - [L/2 0 Re]' ); %world(earth) to body
+wTe = @(p, delta, gamma, phi, L, Tw, Re) ( RotZ(delta) * RotX(gamma) * RotY(-phi) ) \ ( p - [L/2 Tw/2 Re]' ); %world(earth) to wheel
 
 %% Apply Design Constraints
 if strcmp( Target.Axle, 'Front')
@@ -47,9 +47,9 @@ else
     L = -Target.Wheelbase;
 end
 
-Points.LA.W = eTb( Points.LA.B, L, Target.Rl, Target.Rake, 0 );
-Points.UA.W = eTb( Points.UA.B, L, Target.Rl, Target.Rake, 0 );
-Points.TA.W = eTb( Points.TA.B, L, Target.Rl, Target.Rake, 0 );
+Points.LA.W = eTb( Points.LA.B, L, Target.Rl, 0, Target.Rake);
+Points.UA.W = eTb( Points.UA.B, L, Target.Rl, 0, Target.Rake);
+Points.TA.W = eTb( Points.TA.B, L, Target.Rl, 0, Target.Rake);
 Points.LB.W = eTw( Points.LB.T, Target.Toe, Target.Camber, Target.Caster, ...
     L, Target.Track, Target.Rl );
 Points.UB.W = eTw( Points.UB.T, Target.Toe, Target.Camber, Target.Caster, ...

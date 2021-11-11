@@ -48,7 +48,7 @@ for i = DesignAxle
         Sweep(i,j,1).Steer = linspace(-31,31,M)' * ones(1,N);
 
         % Roll Sweep
-        Sweep(i,j,2).Ride  = zeros(M,N);
+        Sweep(i,j,2).Ride  = 50.8 .* ones(M,N);
         Sweep(i,j,2).Roll  = repmat( linspace( -2.5, 2.5, N ), M, 1);
         Sweep(i,j,2).Pitch = zeros(M,N);
         Sweep(i,j,2).Steer = linspace(-31,31,M)' * ones(1,N);
@@ -202,8 +202,8 @@ for i = DesignAxle
     figure % Steer-Steer
     yyaxis left
     for j = 1 : size(Design,2)
-        plot(Sweep(i,j,3).Steer(2,:,:)', -Sweep(i,j,3).Toe(2,:,1)', 'b' ); hold on;
-        plot( flip( Sweep(i,j,3).Steer(2,:,:)' ), (Sweep(i,j,3).Toe(2,:,1)'), 'b--' );
+        plot(Sweep(i,j,3).Steer(2,:,:)', Sweep(i,j,3).Toe(2,:,1)', 'b' ); hold on;
+        plot( flip( Sweep(i,j,3).Steer(2,:,:)' ), -(Sweep(i,j,3).Toe(2,:,1)'), 'b--' );
     end 
     ylabel( 'Steer Angle' )
 

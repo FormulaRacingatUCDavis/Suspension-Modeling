@@ -13,7 +13,7 @@ RotZ = @(t) [cosd(t) sind(t) 0      ; -sind(t) cosd(t) 0      ;  0        0     
 
 %bTe = @(pW,phi,theta) RotX(phi)    * RotY(theta) * (pW - Target.CG' - [L/2 0 0]'); %world to body
 %eTb = @(pB,phi,theta) RotY(theta)' * RotX(phi)'  *  pB + [-L/2 0 -Target.Rl]'; %body to world (old)
-eTb = @(p,L,Re,theta,phi) RotX(phi) * RotY(theta) * p + [L/2 0 Re]'; %body to world(earth)
+eTb = @(p,L,Re,phi,theta) RotX(phi) * RotY(theta) * p + [L/2 0 Re]'; %body to world(earth)
 
 %tTe = @(pW,xT,yT,gamma,phi,delta) RotZ(delta) * RotX(gamma)  * RotY(phi) * (pW - [xT yT Target.Rl]'); %world to tire
 %eTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ; %old copy - tire to world
@@ -23,14 +23,14 @@ eTb = @(p,L,Re,theta,phi) RotX(phi) * RotY(theta) * p + [L/2 0 Re]'; %body to wo
 %eTt = @(pT,xT,yT,gamma,phi,delta) RotY(phi)'  * RotX(gamma)' * RotZ(delta)' *  pT + [xT yT Target.Rl]' ;
 
 %whTt = @
-tTw = @(pWH, Re, camber, caster) RotX(camber)*RotY(caster)* pWH + [0 Re*tand(camber) Re]'; %wheel to tire
+tTw = @(pWH, Re, camber, caster) RotX(camber) * RotY(caster)* pWH + [0 0 Re]'; %wheel to tire
 %tbTwh = @ (pWH) pWH - Design.tr;
 
 %laTb = @(pB,beta) RotX(beta) * RotZ(Design.a.LA(2)) * RotY(Design.a.LA(1)) * (pB - Design.p.LAb); %body to lower a-arm
-bTla = @(pA,beta) RotY(Design.a.LA(1))' * RotZ(Design.a.LA(2))' * RotX(beta)' *  pA +  Design.p.LAb; %lower a-arm to body
+bTla = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)' * pA + Design.p.LAb + [0 0 Attitude.Ride-Target.Ride]'; %lower a-arm to body
 
 %uaTb = @(pB,beta) RotX(beta) * RotZ(Design.a.UA(2)) * RotY(Design.a.UA(1)) * (pB - Design.p.UAb); %body to upper a-arm
-bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)' * pA + Design.p.UAb; %upper a-arm to body
+bTua = @(pA,beta) RotY(Design.a.UA(1))' * RotZ(Design.a.UA(2))' * RotX(beta)' * pA + Design.p.UAb + [0 0 Attitude.Ride-Target.Ride]'; %upper a-arm to body
 
 %lbTla = @(pA,beta1,beta2,beta3) RotZ(beta3) * RotX(beta1) * RotY(beta2) * (pA  - [0 Design.L.LA 0]'); %lower a-arm to lower ball joint
 laTlb = @(pLB,beta1,beta2,beta3) RotY(beta2)' * RotX(beta1)' * RotZ(beta3)' *  pLB + [0 Design.L.LA 0]' ; %lower ball joint to lower a-arm
@@ -39,7 +39,7 @@ lbTw = @(pT) pT - Design.p.LBt; %wheel to lower ball joint
 %wTlb = @(pLB) pLB + Design.p.LBt; %lower ball joint to wheel
 
 % trTb = @(pB ,beta1,beta2) RotZ(beta2)  * RotX(beta1)  * (pB  - (Design.p.TAb + [0 Attitude.Steer 0]')); %body to tie rod
-bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' * pTR + Design.p.TAb + [0 Attitude.Steer 0]'; %tie rod to body
+bTtr = @(pTR,beta1,beta2) RotX(beta1)' * RotZ(beta2)' * pTR + Design.p.TAb + [0 Attitude.Steer Attitude.Ride-Target.Ride]'; %tie rod to body
 
 
 %% Optimization Problem Setup & Execution

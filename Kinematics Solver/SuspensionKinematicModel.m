@@ -62,7 +62,7 @@ else
     
     Target(2).Track       =  1220;                    % Nominal Rear Track Width [mm] 
     Target(2).RollCenter  =  3.00 .* (25.4);          % Force-Based Roll Center Height [in -> mm]
-    Target(2).DraftAngle  = 10.00;                    % Draft Angle [deg]
+    Target(2).DraftAngle  = 15.00;                    % Draft Angle [deg]
     Target(2).Caster      =  0.00;                    % Caster [deg]
     Target(2).Camber      = -0.70;                    % Static Camber [deg]
     Target(2).CamberGain  = -0.25 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
@@ -79,14 +79,14 @@ else
     % Inboard Pickups: Longitudinal |   Lateral   |   Vertical  | 
     Bounds(1).LA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % FLA Bounds (XCS) [in -> mm]
     Bounds(1).UA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % FUA Bounds (XCS) [in -> mm]
-    Bounds(1).TA =    [  2.50,  2.50;  8.70,  8.70;- 1.00,- 1.00] .* (25.4); % FTA Bounds (XCS) [in -> mm]
+    Bounds(1).TA =    [  3.50,  3.50;  8.70,  8.70;- 1.00,- 1.00] .* (25.4); % FTA Bounds (XCS) [in -> mm]
     Bounds(1).RA =    [- 3.00,  2.00;  6.00,  9.50;  8.00, 10.00] .* (25.4); % FRA Bounds (XCS) [in -> mm]
     Bounds(1).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % FPA Bounds (RCS) [in -> mm]
     Bounds(1).SA =    [- 3.00,  0.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % FSA Bounds (XCS) [in -> mm]
 
     Bounds(2).LA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % RLA Bounds (XCS) [in -> mm]
     Bounds(2).UA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % RUA Bounds (XCS) [in -> mm]
-    Bounds(2).TA =    [  0   ,  0   ;  8.50,  8.50;  0.14,  0.14] .* (25.4); % RTA Bounds (XCS) [in -> mm]
+    Bounds(2).TA =    [  0   ,  0   ;  9.90,  9.90;  0   ,  0   ] .* (25.4); % RTA Bounds (XCS) [in -> mm]
     Bounds(2).RA =    [  4.00,  8.00;  8.00, 10.00;  9.00, 11.00] .* (25.4); % RRA Bounds (XCS) [in -> mm]
     Bounds(2).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % RPA Bounds (RCS) [in -> mm]
     Bounds(2).SA =    [ 11.00, 11.00;  8.00, 12.00;  2.00,  4.00] .* (25.4); % RSA Bounds (XCS) [in -> mm]
