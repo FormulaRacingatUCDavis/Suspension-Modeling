@@ -79,7 +79,7 @@ else
     % Inboard Pickups: Longitudinal |   Lateral   |   Vertical  | 
     Bounds(1).LA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % FLA Bounds (XCS) [in -> mm]
     Bounds(1).UA =    [  0   ,  0   ;  0   ,  0   ;  0   ,  0   ] .* (25.4); % FUA Bounds (XCS) [in -> mm]
-    Bounds(1).TA =    [  3.50,  3.50;  8.70,  8.70;- 1.00,- 1.00] .* (25.4); % FTA Bounds (XCS) [in -> mm]
+    Bounds(1).TA =    [  2.50,  2.50;  8.70,  8.70;- 1.00,- 1.00] .* (25.4); % FTA Bounds (XCS) [in -> mm]
     Bounds(1).RA =    [- 3.00,  2.00;  6.00,  9.50;  8.00, 10.00] .* (25.4); % FRA Bounds (XCS) [in -> mm]
     Bounds(1).PA =    [  0   ,  0   ;  2.00,  4.00;  0   ,  0   ] .* (25.4); % FPA Bounds (RCS) [in -> mm]
     Bounds(1).SA =    [- 3.00,  0.00;  8.00, 12.00; 10.00, 18.00] .* (25.4); % FSA Bounds (XCS) [in -> mm]
