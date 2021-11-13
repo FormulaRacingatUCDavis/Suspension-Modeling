@@ -25,7 +25,7 @@ if File.Name~= 0
     load(File.Name);
 else    
     %% User Inputs
-    DesignAxle = [1]; % 1 - Front Axle
+    DesignAxle = [2]; % 1 - Front Axle
                       % 2 - Rear Axle
                       % [1 2] - Both Axles
     
@@ -34,7 +34,7 @@ else
     Target.WeightDist = 0.5;              % Static Front Weight Distribution []
     Target.SprungMass = 225;              % Sprung Mass [kg]
     Target.CG(3)      = 10.15 .* (25.4);  % Nominal CG Height [in -> mm]
-    Target.CG(2)      = 11.00 .* (25.4);  % Nominal CG Lateral [in -> mm]
+    Target.CG(2)      = 0     .* (25.4);  % Nominal CG Lateral [in -> mm]
     Target.Ride       = 2.00  .* (25.4);  % Nominal Ride Height [in -> mm]
     Target.Rake       = 0;                % Nominal Rake Angle [deg]
     Target.Rl         = 7.85  .* (25.4);  % Nominal Loaded Radius [in -> mm]
@@ -55,7 +55,7 @@ else
     Target(1).Caster      =  3.00;                    % Caster [deg]
     Target(1).Camber      = -1.60;                    % Static Camber [deg]
     Target(1).CamberGain  = -0.3 .* (pi/180 / 25.4);  % Camber Gain [deg/in -> rad/mm]
-    Target(1).Toe         =  0.50;                    % Static Toe (Positive Out) [deg]
+    Target(1).Toe         = -0.50;                    % Static Toe (Positive In) [deg]
     Target(1).Scrub       =  0.50 .* (25.4);          % Maximum Scrub [in -> mm]
     Target(1).KPI         =  8.00;                    % Target KPI [deg]
     Target(1).MotionRatio =  0.80;                    % Motion Ratio Target [] 
@@ -66,7 +66,7 @@ else
     Target(2).Caster      =  0.00;                    % Caster [deg]
     Target(2).Camber      = -0.70;                    % Static Camber [deg]
     Target(2).CamberGain  = -0.25 .* (pi/180 / 25.4); % Camber Gain [deg/in -> rad/mm]
-    Target(2).Toe         = -0.50;                    % Static Toe (Positive Out) [deg]
+    Target(2).Toe         =  0.50;                    % Static Toe (Positive In) [deg]
     Target(2).Scrub       =  0.25 .* (25.4);          % Target Scrub [in -> mm]
     Target(2).KPI         = 10.00;                    % Maximum KPI [deg]
     Target(2).MotionRatio =  0.80;                    % Motion Ratio Target [] 
@@ -94,7 +94,7 @@ else
    % Outboard Pickups: Longitudinal |   Lateral   |  Vertical   |
     Bounds(1).LB =    [  0   ,  0   ;- 0.87,- 0.87;- 3.2,- 3.2] .* (25.4); % FLB Bounds (WCS) [in -> mm]
     Bounds(1).UB =    [  0   ,  0   ;- 1.803,- 1.803; 3.425, 3.425] .* (25.4); % FUB Bounds (WCS) [in -> mm] 
-    Bounds(1).TB =    [  3.3 ,  3.3 ;- 1.37,- 1.37;  0   ,  0   ] .* (25.4); % FTB Bounds (WCS) [in -> mm]
+    Bounds(1).TB =    [  3.1 ,  3.1 ;- 1.4 ,- 1.4 ;  0   ,  0   ] .* (25.4); % FTB Bounds (WCS) [in -> mm]
     Bounds(1).PB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FPB Bounds (ACS) [in -> mm] 
     Bounds(1).SB =    [  2.25,  3.75;- 1.75,- 0.85;- 2.50,  2.50] .* (25.4); % FSB Bounds (RCS) [in -> mm]
 
@@ -107,8 +107,8 @@ else
     %%% Operating Condition Ranges
     Attitude.Ride  = [  1.5  2.5] .* (25.4); % Ride Height Range [in -> mm]
     Attitude.Pitch = [ -3.0  3.0];           % Pitch Range [deg]
-    Attitude.Roll  = [  0.0  3.0];           % Roll  Range (Mirrored) [deg]
-    Attitude.Steer = [-31.7 31.7];           % Steer Range (Mirrored) [mm]
+    Attitude.Roll  = [ -3.0  3.0];           % Roll  Range [deg]
+    Attitude.Steer = [-31.7 31.7];           % Steer Range [mm]
 
     N.Design = 1; % Number of Designs
     
