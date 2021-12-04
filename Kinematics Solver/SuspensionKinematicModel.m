@@ -25,7 +25,7 @@ if File.Name~= 0
     load(File.Name);
 else    
     %% User Inputs
-    DesignAxle = [2]; % 1 - Front Axle
+    DesignAxle = [1]; % 1 - Front Axle
                       % 2 - Rear Axle
                       % [1 2] - Both Axles
     
@@ -51,7 +51,7 @@ else
     %%% Suspension Objectives
     Target(1).Track       =  48 .* 25.4;              % Nominal Front Track Width [in -> mm]
     Target(1).RollCenter  =  1.00 .* (25.4);          % Force-Based Roll Center Height [in -> mm]
-    Target(1).DraftAngle  =  10.00;                   % Draft Angle [deg]
+    Target(1).DraftAngle  =  20.00;                   % Draft Angle [deg]
     Target(1).Caster      =  3.00;                    % Caster [deg]
     Target(1).Camber      = -1.60;                    % Static Camber [deg]
     Target(1).CamberGain  = -0.3 .* (pi/180 / 25.4);  % Camber Gain [deg/in -> rad/mm]
@@ -60,7 +60,7 @@ else
     Target(1).KPI         =  8.00;                    % Target KPI [deg]
     Target(1).MotionRatio =  0.80;                    % Motion Ratio Target [] 
     
-    Target(2).Track       =  1220;                    % Nominal Rear Track Width [mm] 
+    Target(2).Track       =  48 .* 25.4;              % Nominal Rear Track Width [in -> mm] 
     Target(2).RollCenter  =  3.00 .* (25.4);          % Force-Based Roll Center Height [in -> mm]
     Target(2).DraftAngle  = 15.00;                    % Draft Angle [deg]
     Target(2).Caster      =  0.00;                    % Caster [deg]
