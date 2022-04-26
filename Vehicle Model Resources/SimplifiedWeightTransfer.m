@@ -27,7 +27,7 @@ function [NormalLoad] = SimplifiedWeightTransfer( LongAccTot, LatAccTot, ...
 
 %% Test Case
 if nargin == 0
-    LongAccTot = -0.5 .* 9.81;
+    LongAccTot = 0; %-0.5 .* 9.81;
     LatAccTot  =  0.7 .* 9.81;
     
     Wheelbase = 1.575;

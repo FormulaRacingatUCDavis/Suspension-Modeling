@@ -14,7 +14,7 @@ if nargin == 0
     rear_unsprung_CG = 0.3;
     unsprung_mass_front = 38.5;
     unsprung_mass_rear = 38.5;
-    latAcc = 3.0;
+    latAcc = 6.9;
     sprung_center_mass_height = 0.23;
     wheelbase = 1.525;
     ds = 0;
@@ -22,7 +22,8 @@ if nargin == 0
     ds = sprung_center_mass_height  - ...
     interp1( [0 wheelbase], [instant_center_height_front instant_center_height_rear], ...
     Pf.*wheelbase );
-    
+    dummyvar = interp1( [0 wheelbase], [instant_center_height_front instant_center_height_rear], ...
+    Pf.*wheelbase );
     [dFz] = SampoWeightTransfer( Pf, tw_front, tw_rear, ds, sprung_mass,...
     instant_center_height_front, instant_center_height_rear, front_unsprung_CG,...
     rear_unsprung_CG, unsprung_mass_front, unsprung_mass_rear, latAcc)

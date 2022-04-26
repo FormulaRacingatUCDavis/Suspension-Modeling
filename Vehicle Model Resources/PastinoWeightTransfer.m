@@ -7,7 +7,7 @@ clc; clear; close all;
 m = 270 + .15*270;       %vehicle+driver mass (kg) + percent safety factor                                            
 g = 9.81;     
 
-a_y = 0;        %lat accel in G's                                                           
+a_y = 0.7 .* 9.81;        %lat accel in G's (CHANGED)                                                           
 a_x = 0;          %long accel in G's                                                           
 
 tw_f = 1.220;      %track width front (m)   
