@@ -26,7 +26,7 @@ if nargin == 0
     Pf.*wheelbase );
     [dFz] = SampoWeightTransfer( Pf, tw_front, tw_rear, ds, sprung_mass,...
     instant_center_height_front, instant_center_height_rear, front_unsprung_CG,...
-    rear_unsprung_CG, unsprung_mass_front, unsprung_mass_rear, latAcc)
+    rear_unsprung_CG, unsprung_mass_front, unsprung_mass_rear, latAcc);
 
     return
 

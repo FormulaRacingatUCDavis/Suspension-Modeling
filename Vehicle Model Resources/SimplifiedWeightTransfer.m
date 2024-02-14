@@ -27,19 +27,19 @@ function [NormalLoad] = SimplifiedWeightTransfer( LongAccTot, LatAccTot, ...
 
 %% Test Case
 if nargin == 0
-    LongAccTot = 0; %-0.5 .* 9.81;
-    LatAccTot  =  0.7 .* 9.81;
+    LongAccTot = 1.3 .* 9.81;
+    LatAccTot  =  1.3 .* 9.81;
     
     Wheelbase = 1.575;
-    TrackWidth = [1.22, 1.23];
+    TrackWidth = [1.20, 1.20];
     
-    Mass = 275;
-    CoG  = [(0.47-0.5)*Wheelbase, 0, 0.25];
+    Mass = 280;
+    CoG  = [(0.5-0.5)*Wheelbase, 0, 0.25];
     
-    Downforce = 200;
+    Downforce = 0; %200;
     CoP  = [(0.4-0.5)*Wheelbase, 0, 0];
     
-    PerLLT = 0.6;
+    PerLLT = 0.5;
     
     [NormalLoad] = SimplifiedWeightTransfer( LongAccTot, LatAccTot, ...
         Wheelbase, TrackWidth, Mass, CoG, Downforce, CoP, PerLLT ) %#ok<NOPRT>
