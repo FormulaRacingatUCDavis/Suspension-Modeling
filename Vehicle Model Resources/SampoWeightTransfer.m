@@ -15,6 +15,12 @@ if nargin == 0
     unsprung_mass_front = 38.5;
     unsprung_mass_rear = 38.5;
     latAcc = 6.9;
+
+    % Check why I added this
+
+    %Parameter.Susp.ds = Parameter.Mass.hs - ...
+    %interp1( [0 Parameter.Susp.L], Parameter.Susp.IC, Parameter.Mass.a );
+
     sprung_center_mass_height = 0.23;
     wheelbase = 1.525;
     ds = 0;
